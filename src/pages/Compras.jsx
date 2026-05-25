@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useCompras, useProductos } from '../store/useStore';
 import { Plus, Trash2, Search, ChevronDown, ShoppingCart } from 'lucide-react';
-import { PageHeader, Btn, Modal, ModalFooter, Label, Input, Select, Badge, t } from '../components/UI';
+import { PageHeader, Btn, Modal, ModalFooter, Label, Input, Select, t } from '../components/UI';
 
 function NuevaCompraForm({ onClose, productos, registrar }) {
   const hoy = new Date().toISOString().split('T')[0];
@@ -37,7 +37,6 @@ function NuevaCompraForm({ onClose, productos, registrar }) {
           <Input type="date" value={fecha} onChange={e => setFecha(e.target.value)} style={{ width: 180 }} />
         </div>
 
-        {/* Items header */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 72px 100px 32px', gap: 8, marginBottom: 8 }}>
           {['Producto', 'Cant.', 'Costo total', ''].map(h => (
             <p key={h} style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</p>
@@ -53,8 +52,9 @@ function NuevaCompraForm({ onClose, productos, registrar }) {
               </Select>
               <Input type="number" min="0" placeholder="0" value={it.cantidad} onChange={e => update(i, 'cantidad', e.target.value)} style={{ textAlign: 'right' }} />
               <Input type="number" min="0" placeholder="0" value={it.costoTotal} onChange={e => update(i, 'costoTotal', e.target.value)} style={{ textAlign: 'right' }} />
-              <button type="button" onClick={() => removeItem(i)} style={{ width: 32, height: 32, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3 }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
+              <button type="button" onClick={() => removeItem(i)}
+                style={{ width: 32, height: 32, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3 }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = '#F87171'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; }}>
                 <Trash2 size={13} />
               </button>
@@ -97,9 +97,9 @@ export default function Compras() {
       return acc;
     }, {});
 
-  const groups        = Object.values(grouped).sort((a, b) => b.fecha > a.fecha ? 1 : -1).slice(0, 50);
-  const totalInv      = compras.reduce((s, c) => s + (c['Costo T'] || 0), 0);
-  const totalOrdenes  = Object.keys(grouped).length;
+  const groups       = Object.values(grouped).sort((a, b) => b.fecha > a.fecha ? 1 : -1).slice(0, 50);
+  const totalInv     = compras.reduce((s, c) => s + (c['Costo T'] || 0), 0);
+  const totalOrdenes = Object.keys(grouped).length;
 
   return (
     <div style={{ maxWidth: 860 }}>
@@ -113,8 +113,8 @@ export default function Compras() {
       {/* Summary */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
         {[
-          { label: 'Total invertido',    value: fmt(totalInv) },
-          { label: 'Órdenes de compra',  value: totalOrdenes  },
+          { label: 'Total invertido',   value: fmt(totalInv) },
+          { label: 'Órdenes de compra', value: totalOrdenes  },
         ].map(({ label, value }) => (
           <div key={label} style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: '16px 20px' }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{label}</p>
@@ -146,10 +146,10 @@ export default function Compras() {
             <button
               onClick={() => setExpandedId(expandedId === g.id ? null : g.id)}
               style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#FAFAFA'}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
               onMouseLeave={e => e.currentTarget.style.background = 'none'}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, fontFamily: 'monospace', background: t.accentBg, color: t.accent, padding: '3px 8px', borderRadius: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, fontFamily: 'monospace', background: t.accentDim, color: t.accent, padding: '3px 8px', borderRadius: 6 }}>
                   {g.id}
                 </span>
                 <span style={{ fontSize: 12, color: t.text3 }}>{g.fecha}</span>
@@ -165,7 +165,7 @@ export default function Compras() {
               <div style={{ borderTop: `1px solid ${t.border}` }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
-                    <tr style={{ background: '#FAFAFA', borderBottom: `1px solid ${t.border}` }}>
+                    <tr style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${t.border}` }}>
                       {[['Producto', 'left'], ['Cant.', 'center'], ['C. Unitario', 'right'], ['C. Total', 'right']].map(([h, a]) => (
                         <th key={h} style={{ padding: '9px 16px', textAlign: a, fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</th>
                       ))}
@@ -173,7 +173,9 @@ export default function Compras() {
                   </thead>
                   <tbody>
                     {g.items.map((item, i) => (
-                      <tr key={i} style={{ borderTop: i > 0 ? `1px solid ${t.borderSub}` : 'none' }}>
+                      <tr key={i} style={{ borderTop: i > 0 ? `1px solid ${t.border}` : 'none' }}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                         <td style={{ padding: '10px 16px', color: t.text2 }}>{item.Producto}</td>
                         <td style={{ padding: '10px 16px', textAlign: 'center', color: t.text3 }}>{item.Cantidad}</td>
                         <td style={{ padding: '10px 16px', textAlign: 'right', color: t.text3 }}>{fmt(item['Costo U'])}</td>

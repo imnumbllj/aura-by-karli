@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useInventario } from '../store/useStore';
 import { Search } from 'lucide-react';
-import { PageHeader, Badge, Table, Th, Td, t } from '../components/UI';
+import { PageHeader, Badge, Table, Th, Td, TRow, t } from '../components/UI';
 
 function stockBadge(n) {
   if (n === 0) return <Badge color="red">Sin stock</Badge>;
@@ -41,9 +41,9 @@ export default function Inventario() {
       {/* Summary strip */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
         {[
-          { label: `${all.length} productos`,      bg: t.surface,  border: t.border,   text: t.text2 },
-          bajoStock > 0 && { label: `${bajoStock} bajo stock`, bg: '#FFFBEB', border: '#FDE68A', text: '#D97706' },
-          sinStock  > 0 && { label: `${sinStock} sin stock`,   bg: '#FEF2F2', border: '#FECACA', text: '#DC2626' },
+          { label: `${all.length} productos`,      bg: t.surface,  border: t.border,                     text: t.text2 },
+          bajoStock > 0 && { label: `${bajoStock} bajo stock`, bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.2)', text: '#FCD34D' },
+          sinStock  > 0 && { label: `${sinStock} sin stock`,   bg: 'rgba(239,68,68,0.1)',  border: 'rgba(239,68,68,0.2)',  text: '#F87171' },
         ].filter(Boolean).map((item, i) => (
           <div key={i} style={{ padding: '6px 14px', borderRadius: 8, background: item.bg, border: `1px solid ${item.border}`, fontSize: 12, fontWeight: 600, color: item.text }}>
             {item.label}
@@ -91,16 +91,14 @@ export default function Inventario() {
               No se encontraron productos
             </td></tr>
           )}
-          {items.map(([nombre, data], i) => (
-            <tr key={nombre} style={{ borderTop: i > 0 ? `1px solid ${t.borderSub}` : 'none', transition: 'background 0.1s' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#FAFAFA'}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+          {items.map(([nombre, data]) => (
+            <TRow key={nombre}>
               <Td style={{ fontWeight: 500, color: t.text1 }}>{nombre}</Td>
               <Td align="right" style={{ fontWeight: 700, fontSize: 15, color: t.text1 }}>{data.stockActual}</Td>
               <Td align="right" style={{ color: t.text3 }}>{data.totalComprado}</Td>
               <Td align="right" style={{ color: t.text2 }}>{fmt(data.costoPromedio)}</Td>
               <Td align="center">{stockBadge(data.stockActual)}</Td>
-            </tr>
+            </TRow>
           ))}
         </tbody>
       </Table>

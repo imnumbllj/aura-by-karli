@@ -53,7 +53,7 @@ export default function CreadorRegalos() {
               <Label>% Ganancia — <span style={{ color: t.accent, fontWeight: 700 }}>{ganancia}%</span></Label>
               <input type="range" min="10" max="70" step="5" value={ganancia}
                 onChange={e => setGanancia(e.target.value)}
-                style={{ width: '100%', accentColor: t.accent, cursor: 'pointer', marginTop: 6 }} />
+                style={{ width: '100%', cursor: 'pointer', marginTop: 6 }} />
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
                 <span style={{ fontSize: 10, color: t.text3 }}>10%</span>
                 <span style={{ fontSize: 10, color: t.text3 }}>70%</span>
@@ -84,15 +84,15 @@ export default function CreadorRegalos() {
                   {prods.map(p => <option key={p.id} value={p.nombreCompleto}>{p.nombreCompleto}</option>)}
                 </Select>
                 <Input type="number" min="1" value={it.cantidad} onChange={e => update(i, 'cantidad', e.target.value)} style={{ textAlign: 'right' }} />
-                <div style={{ height: 34, borderRadius: 8, background: '#FAFAFA', border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, color: t.text3 }}>
+                <div style={{ height: 34, borderRadius: 8, background: t.surface2, border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, color: t.text3 }}>
                   {it.costoU > 0 ? fmt(it.costoU) : '—'}
                 </div>
-                <div style={{ height: 34, borderRadius: 8, background: '#FAFAFA', border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, fontWeight: 600, color: t.text1 }}>
+                <div style={{ height: 34, borderRadius: 8, background: t.surface2, border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, fontWeight: 600, color: t.text1 }}>
                   {it.costoT > 0 ? fmt(it.costoT) : '—'}
                 </div>
                 <button type="button" onClick={() => removeItem(i)}
                   style={{ width: 32, height: 32, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, fontFamily: 'inherit' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = '#F87171'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; }}>
                   <Trash2 size={13} />
                 </button>
@@ -106,34 +106,34 @@ export default function CreadorRegalos() {
         </div>
 
         {/* Result */}
-        <div style={{ background: '#0C0A0B', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: 20 }}>
+        <div style={{ background: '#111114', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
-            <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(194,24,91,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Gift size={14} style={{ color: '#F48FB1' }} />
+            <div style={{ width: 30, height: 30, borderRadius: 8, background: t.accentDim, border: `1px solid ${t.accentMid}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Gift size={14} style={{ color: t.accent }} />
             </div>
             <div>
-              <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Resultado</p>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#FAFAFA', letterSpacing: '-0.2px' }}>{nombre || 'Sin nombre'}</p>
+              <p style={{ fontSize: 10, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Resultado</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: t.text1, letterSpacing: '-0.2px' }}>{nombre || 'Sin nombre'}</p>
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 14 }}>
             {[
-              { label: 'Materiales',         value: fmt(calc.materiales) },
-              { label: 'Mano de obra',        value: fmt(manoDeObra) },
-              { label: 'Costo total',         value: fmt(calc.costoTotal) },
+              { label: 'Materiales',           value: fmt(calc.materiales) },
+              { label: 'Mano de obra',          value: fmt(manoDeObra) },
+              { label: 'Costo total',           value: fmt(calc.costoTotal) },
               { label: `Ganancia ${ganancia}%`, value: fmt(calc.gananciaAbs) },
             ].map(({ label, value }) => (
-              <div key={label} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 9, padding: '12px 14px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{label}</p>
-                <p style={{ fontSize: 15, fontWeight: 700, color: '#FAFAFA' }}>{value}</p>
+              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 9, padding: '12px 14px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <p style={{ fontSize: 10, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{label}</p>
+                <p style={{ fontSize: 15, fontWeight: 700, color: t.text1 }}>{value}</p>
               </div>
             ))}
           </div>
 
-          <div style={{ background: 'rgba(194,24,91,0.15)', borderRadius: 10, padding: '18px 20px', textAlign: 'center', border: '1px solid rgba(194,24,91,0.25)' }}>
-            <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Precio de venta sugerido</p>
-            <p style={{ fontSize: 40, fontWeight: 800, color: '#FAFAFA', letterSpacing: '-1.5px', lineHeight: 1 }}>{fmt(calc.precioVenta)}</p>
+          <div style={{ background: t.accentDim, borderRadius: 10, padding: '18px 20px', textAlign: 'center', border: `1px solid ${t.accentMid}` }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Precio de venta sugerido</p>
+            <p style={{ fontSize: 40, fontWeight: 800, color: t.text1, letterSpacing: '-1.5px', lineHeight: 1 }}>{fmt(calc.precioVenta)}</p>
           </div>
         </div>
       </div>

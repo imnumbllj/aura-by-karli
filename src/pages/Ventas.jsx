@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useVentas } from '../store/useStore';
 import { Plus, Trash2, TrendingUp } from 'lucide-react';
-import { PageHeader, Btn, Modal, ModalFooter, Label, Input, Table, Th, Td, t } from '../components/UI';
+import { PageHeader, Btn, Modal, ModalFooter, Label, Input, Table, Th, Td, TRow, t } from '../components/UI';
 
 function NuevaVentaForm({ onClose, registrar }) {
   const [nombre,   setNombre]   = useState('');
@@ -36,7 +36,7 @@ function NuevaVentaForm({ onClose, registrar }) {
           </div>
         </div>
 
-        <div style={{ background: t.accentBg, borderRadius: 10, padding: '14px 16px', textAlign: 'center', border: `1px solid ${t.accentMid}`, marginBottom: 4 }}>
+        <div style={{ background: t.accentDim, borderRadius: 10, padding: '14px 16px', textAlign: 'center', border: `1px solid ${t.accentMid}`, marginBottom: 4 }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Total de la venta</p>
           <p style={{ fontSize: 26, fontWeight: 800, color: t.accent, letterSpacing: '-0.8px' }}>{fmt(total)}</p>
         </div>
@@ -95,10 +95,8 @@ export default function Ventas() {
               No hay ventas registradas aún
             </td></tr>
           )}
-          {ventas.map((v, i) => (
-            <tr key={v.id} style={{ borderTop: i > 0 ? `1px solid ${t.borderSub}` : 'none', transition: 'background 0.1s' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#FAFAFA'}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+          {ventas.map((v) => (
+            <TRow key={v.id}>
               <Td style={{ fontWeight: 500, color: t.text1 }}>{v.nombre}</Td>
               <Td align="center" style={{ color: t.text3 }}>{v.cantidad}</Td>
               <Td align="right" style={{ color: t.text3 }}>{fmt(v.precio)}</Td>
@@ -110,14 +108,15 @@ export default function Ventas() {
                     <Btn size="sm" variant="ghost" onClick={() => setConfirmDel(null)}>No</Btn>
                   </div>
                 ) : (
-                  <button onClick={() => setConfirmDel(v.id)} style={{ width: 28, height: 28, borderRadius: 7, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, margin: '0 auto' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
+                  <button onClick={() => setConfirmDel(v.id)}
+                    style={{ width: 28, height: 28, borderRadius: 7, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, margin: '0 auto' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = '#F87171'; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; }}>
                     <Trash2 size={13} />
                   </button>
                 )}
               </Td>
-            </tr>
+            </TRow>
           ))}
         </tbody>
       </Table>

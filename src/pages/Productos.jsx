@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useProductos } from '../store/useStore';
 import { Plus, Search, ToggleLeft, ToggleRight, Settings2 } from 'lucide-react';
-import { PageHeader, Btn, Modal, ModalFooter, Label, Input, Select, Badge, Table, Th, Td, t } from '../components/UI';
+import { PageHeader, Btn, Modal, ModalFooter, Label, Input, Select, Badge, Table, Th, Td, TRow, t } from '../components/UI';
 
 const CATEGORIAS = ['Producto Principal', 'Complemento', 'Empaque', 'Decoración', 'Servicio'];
 const TIPOS      = ['Directo', 'Indirecto', 'Servicio'];
@@ -45,7 +45,7 @@ function NuevoProductoForm({ onClose, agregar, productos }) {
           ))}
         </div>
         {nombreCompleto && (
-          <div style={{ background: '#FAFAFA', borderRadius: 8, padding: '9px 12px', border: `1px solid ${t.border}`, marginBottom: 4 }}>
+          <div style={{ background: t.surface2, borderRadius: 8, padding: '9px 12px', border: `1px solid ${t.border}`, marginBottom: 4 }}>
             <span style={{ fontSize: 11, color: t.text3 }}>Nombre completo: </span>
             <span style={{ fontSize: 13, fontWeight: 600, color: t.text1 }}>{nombreCompleto}</span>
           </div>
@@ -61,9 +61,9 @@ function NuevoProductoForm({ onClose, agregar, productos }) {
 
 export default function Productos() {
   const { productos, agregar, toggleActivo } = useProductos();
-  const [search,   setSearch]   = useState('');
+  const [search,    setSearch]    = useState('');
   const [catFiltro, setCatFiltro] = useState('Todos');
-  const [showForm, setShowForm] = useState(false);
+  const [showForm,  setShowForm]  = useState(false);
 
   const filtered = productos
     .filter(p => p.nombreCompleto.toLowerCase().includes(search.toLowerCase()))
@@ -128,11 +128,8 @@ export default function Productos() {
               No se encontraron productos
             </td></tr>
           )}
-          {filtered.map((p, i) => (
-            <tr key={p.id}
-              style={{ borderTop: i > 0 ? `1px solid ${t.borderSub}` : 'none', opacity: p.activo ? 1 : 0.45, transition: 'background 0.1s' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#FAFAFA'}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+          {filtered.map((p) => (
+            <TRow key={p.id} style={{ opacity: p.activo ? 1 : 0.45 }}>
               <Td style={{ fontWeight: 500, color: t.text1 }}>
                 {p.nombreCompleto}
                 <span style={{ fontSize: 11, color: t.text3, marginLeft: 8, fontFamily: 'monospace' }}>{p.id}</span>
@@ -149,7 +146,7 @@ export default function Productos() {
                     : <ToggleLeft  size={22} style={{ color: t.text3  }} />}
                 </button>
               </Td>
-            </tr>
+            </TRow>
           ))}
         </tbody>
       </Table>

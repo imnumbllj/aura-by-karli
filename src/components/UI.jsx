@@ -1,203 +1,270 @@
-// ── Shared design tokens & primitives ──
+// ── Design System — Dark Mode ──
 
-export const t = {
-  bg:        '#F4F4F5',
-  surface:   '#FFFFFF',
-  border:    '#E4E4E7',
-  borderSub: '#F0F0F2',
-  text1:     '#09090B',
-  text2:     '#52525B',
-  text3:     '#A1A1AA',
-  accent:    '#C2185B',
-  accentBg:  '#FFF1F5',
-  accentMid: '#FCE4EC',
+const S = {
+  bg:         '#0E0E10',
+  surface:    '#18181B',
+  surface2:   '#1F1F23',
+  surface3:   '#26262C',
+  border:     'rgba(255,255,255,0.07)',
+  border2:    'rgba(255,255,255,0.12)',
+  text1:      '#F4F4F5',
+  text2:      'rgba(244,244,245,0.6)',
+  text3:      'rgba(244,244,245,0.28)',
+  accent:     '#E8194B',
+  accentDim:  'rgba(232,25,75,0.12)',
+  accentMid:  'rgba(232,25,75,0.22)',
 };
+export { S as t };
 
+// ── PageHeader ──
 export function PageHeader({ eyebrow, title }) {
   return (
-    <div style={{ marginBottom: 28 }}>
+    <div style={{ marginBottom: 32 }}>
       {eyebrow && (
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: t.accent, marginBottom: 4 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.accent, marginBottom: 6, opacity: 0.9 }}>
           {eyebrow}
         </p>
       )}
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: t.text1, letterSpacing: '-0.4px', lineHeight: 1.2 }}>
+      <h1 style={{ fontSize: 24, fontWeight: 700, color: S.text1, letterSpacing: '-0.5px', lineHeight: 1.15 }}>
         {title}
       </h1>
     </div>
   );
 }
 
-export function Card({ children, style = {} }) {
+// ── Card ──
+export function Card({ children, style = {}, padding = 20 }) {
   return (
-    <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, ...style }}>
+    <div style={{
+      background: S.surface,
+      borderRadius: 12,
+      border: `1px solid ${S.border}`,
+      padding,
+      ...style,
+    }}>
       {children}
     </div>
   );
 }
 
-export function Btn({ children, onClick, type = 'button', variant = 'primary', size = 'md', style = {} }) {
-  const base = {
-    display: 'inline-flex', alignItems: 'center', gap: 6,
-    fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer',
-    border: 'none', outline: 'none', transition: 'all 0.12s',
-    borderRadius: 8, letterSpacing: '-0.1px',
-  };
-  const sizes = {
-    sm: { fontSize: 12, padding: '5px 12px', height: 28 },
-    md: { fontSize: 13, padding: '7px 14px', height: 34 },
-  };
-  const variants = {
-    primary:  { background: t.accent,   color: '#fff', border: `1px solid ${t.accent}` },
-    ghost:    { background: 'transparent', color: t.text2, border: `1px solid ${t.border}` },
-    danger:   { background: '#FEF2F2',  color: '#DC2626', border: '1px solid #FECACA' },
-  };
+// ── SectionTitle ──
+export function SectionTitle({ children }) {
   return (
-    <button type={type} onClick={onClick}
-      style={{ ...base, ...sizes[size], ...variants[variant], ...style }}>
-      {children}
-    </button>
-  );
-}
-
-export function Input({ style = {}, ...props }) {
-  return (
-    <input
-      style={{
-        width: '100%', height: 34, borderRadius: 8, padding: '0 12px',
-        border: `1px solid ${t.border}`, background: t.surface,
-        fontSize: 13, color: t.text1, outline: 'none', fontFamily: 'inherit',
-        transition: 'border-color 0.12s',
-        ...style,
-      }}
-      onFocus={e => e.target.style.borderColor = t.accent}
-      onBlur={e => e.target.style.borderColor = t.border}
-      {...props}
-    />
-  );
-}
-
-export function Select({ children, style = {}, ...props }) {
-  return (
-    <select
-      style={{
-        width: '100%', height: 34, borderRadius: 8, padding: '0 10px',
-        border: `1px solid ${t.border}`, background: t.surface,
-        fontSize: 13, color: t.text1, outline: 'none', fontFamily: 'inherit',
-        cursor: 'pointer',
-        ...style,
-      }}
-      {...props}>
-      {children}
-    </select>
-  );
-}
-
-export function Label({ children }) {
-  return (
-    <p style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>
+    <p style={{ fontSize: 12, fontWeight: 600, color: S.text3, letterSpacing: '0.01em', marginBottom: 14 }}>
       {children}
     </p>
   );
 }
 
-export function Badge({ children, color = 'gray' }) {
-  const colors = {
-    gray:   { bg: '#F4F4F5', text: '#71717A' },
-    rose:   { bg: '#FFF1F5', text: '#C2185B' },
-    green:  { bg: '#F0FDF4', text: '#16A34A' },
-    amber:  { bg: '#FFFBEB', text: '#D97706' },
-    red:    { bg: '#FEF2F2', text: '#DC2626' },
-    violet: { bg: '#F5F3FF', text: '#7C3AED' },
-    blue:   { bg: '#EFF6FF', text: '#2563EB' },
-    teal:   { bg: '#F0FDFA', text: '#0D9488' },
+// ── Button ──
+export function Btn({ children, onClick, type = 'button', variant = 'primary', size = 'md', disabled = false, style = {} }) {
+  const sizes = {
+    sm: { fontSize: 12, padding: '5px 11px', height: 28, gap: 5 },
+    md: { fontSize: 13, padding: '7px 14px', height: 34, gap: 6 },
   };
-  const c = colors[color] || colors.gray;
+  const variants = {
+    primary: {
+      background: S.accent,
+      color: '#fff',
+      border: `1px solid rgba(255,255,255,0.1)`,
+      boxShadow: '0 1px 2px rgba(232,25,75,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
+    },
+    ghost: {
+      background: S.surface2,
+      color: S.text2,
+      border: `1px solid ${S.border2}`,
+    },
+    danger: {
+      background: 'rgba(220,38,38,0.12)',
+      color: '#F87171',
+      border: '1px solid rgba(220,38,38,0.2)',
+    },
+  };
+  const s = sizes[size];
+  const v = variants[variant];
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className="btn-press"
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: s.gap,
+        height: s.height, padding: s.padding,
+        fontSize: s.fontSize, fontWeight: 500, letterSpacing: '-0.1px',
+        borderRadius: 8, cursor: disabled ? 'not-allowed' : 'pointer',
+        fontFamily: 'inherit', transition: 'all 0.15s ease',
+        opacity: disabled ? 0.45 : 1,
+        ...v, ...style,
+      }}
+      onMouseEnter={e => { if (!disabled) e.currentTarget.style.opacity = '0.85'; }}
+      onMouseLeave={e => { if (!disabled) e.currentTarget.style.opacity = '1'; }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ── Label ──
+export function Label({ children }) {
+  return (
+    <p style={{ fontSize: 11, fontWeight: 600, color: S.text3, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 }}>
+      {children}
+    </p>
+  );
+}
+
+// ── Input ──
+export function Input({ style = {}, ...props }) {
+  return (
+    <input
+      style={{ width: '100%', height: 34, padding: '0 12px', ...style }}
+      {...props}
+    />
+  );
+}
+
+// ── Select ──
+export function Select({ children, style = {}, ...props }) {
+  return (
+    <select style={{ width: '100%', height: 34, padding: '0 10px', cursor: 'pointer', ...style }} {...props}>
+      {children}
+    </select>
+  );
+}
+
+// ── Badge ──
+const BADGE_COLORS = {
+  gray:   { bg: 'rgba(255,255,255,0.06)',  text: 'rgba(244,244,245,0.5)',  border: 'rgba(255,255,255,0.08)' },
+  rose:   { bg: 'rgba(232,25,75,0.12)',    text: '#FB7185',                border: 'rgba(232,25,75,0.2)' },
+  green:  { bg: 'rgba(34,197,94,0.1)',     text: '#4ADE80',                border: 'rgba(34,197,94,0.15)' },
+  amber:  { bg: 'rgba(245,158,11,0.1)',    text: '#FCD34D',                border: 'rgba(245,158,11,0.15)' },
+  red:    { bg: 'rgba(239,68,68,0.1)',     text: '#F87171',                border: 'rgba(239,68,68,0.15)' },
+  violet: { bg: 'rgba(139,92,246,0.1)',    text: '#A78BFA',                border: 'rgba(139,92,246,0.15)' },
+  blue:   { bg: 'rgba(59,130,246,0.1)',    text: '#60A5FA',                border: 'rgba(59,130,246,0.15)' },
+  teal:   { bg: 'rgba(20,184,166,0.1)',    text: '#2DD4BF',                border: 'rgba(20,184,166,0.15)' },
+};
+export function Badge({ children, color = 'gray' }) {
+  const c = BADGE_COLORS[color] || BADGE_COLORS.gray;
   return (
     <span style={{
       display: 'inline-block', padding: '2px 8px', borderRadius: 99,
-      fontSize: 11, fontWeight: 600, background: c.bg, color: c.text,
-      letterSpacing: '0.01em',
+      fontSize: 11, fontWeight: 600,
+      background: c.bg, color: c.text, border: `1px solid ${c.border}`,
     }}>
       {children}
     </span>
   );
 }
 
+// ── Table ──
 export function Table({ children }) {
   return (
-    <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, overflow: 'hidden' }}>
+    <div style={{ background: S.surface, borderRadius: 12, border: `1px solid ${S.border}`, overflow: 'hidden' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
         {children}
       </table>
     </div>
   );
 }
-
-export function Th({ children, align = 'left' }) {
+export function Th({ children, align = 'left', style = {} }) {
   return (
     <th style={{
       padding: '10px 16px', textAlign: align,
-      fontSize: 11, fontWeight: 600, color: t.text3,
+      fontSize: 11, fontWeight: 600, color: S.text3,
       textTransform: 'uppercase', letterSpacing: '0.07em',
-      background: '#FAFAFA', borderBottom: `1px solid ${t.border}`,
-      whiteSpace: 'nowrap',
+      background: S.surface2, borderBottom: `1px solid ${S.border}`,
+      whiteSpace: 'nowrap', ...style,
     }}>
       {children}
     </th>
   );
 }
-
 export function Td({ children, align = 'left', style = {} }) {
   return (
-    <td style={{ padding: '11px 16px', textAlign: align, color: t.text2, verticalAlign: 'middle', ...style }}>
+    <td style={{ padding: '11px 16px', textAlign: align, color: S.text2, verticalAlign: 'middle', ...style }}>
       {children}
     </td>
   );
 }
-
-export function Modal({ onClose, title, subtitle, icon: Icon, children }) {
+export function TRow({ children, style = {} }) {
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 100,
-      background: 'rgba(9,9,11,0.6)', backdropFilter: 'blur(6px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
-    }}>
-      <div style={{
-        background: t.surface, borderRadius: 16, width: '100%', maxWidth: 520,
-        border: `1px solid ${t.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
-        overflow: 'hidden',
-      }}>
-        <div style={{ padding: '18px 20px', borderBottom: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <tr
+      style={{ borderTop: `1px solid ${S.border}`, transition: 'background 0.12s ease', cursor: 'default', ...style }}
+      onMouseEnter={e => e.currentTarget.style.background = S.surface2}
+      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+    >
+      {children}
+    </tr>
+  );
+}
+
+// ── Modal ──
+export function Modal({ onClose, title, subtitle, icon: Icon, children, maxWidth = 520 }) {
+  return (
+    <div
+      className="overlay-enter"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 200,
+        background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
+      }}
+      onClick={e => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        className="modal-enter"
+        style={{
+          background: S.surface,
+          borderRadius: 14,
+          border: `1px solid ${S.border2}`,
+          boxShadow: '0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+          width: '100%', maxWidth,
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div style={{ padding: '16px 20px', borderBottom: `1px solid ${S.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {Icon && (
-              <div style={{ width: 34, height: 34, borderRadius: 9, background: t.accentBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon size={16} style={{ color: t.accent }} />
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: S.accentDim, border: `1px solid ${S.accentMid}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Icon size={15} style={{ color: S.accent }} />
               </div>
             )}
             <div>
-              <p style={{ fontSize: 14, fontWeight: 600, color: t.text1, letterSpacing: '-0.2px' }}>{title}</p>
-              {subtitle && <p style={{ fontSize: 12, color: t.text3, marginTop: 1 }}>{subtitle}</p>}
+              <p style={{ fontSize: 14, fontWeight: 600, color: S.text1, letterSpacing: '-0.2px' }}>{title}</p>
+              {subtitle && <p style={{ fontSize: 11, color: S.text3, marginTop: 1 }}>{subtitle}</p>}
             </div>
           </div>
-          <button onClick={onClose} style={{
-            width: 28, height: 28, borderRadius: 7, border: `1px solid ${t.border}`,
-            background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', color: t.text3, fontSize: 16, lineHeight: 1,
-          }}>×</button>
+          <button
+            onClick={onClose}
+            style={{ width: 28, height: 28, borderRadius: 7, background: S.surface2, border: `1px solid ${S.border2}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: S.text3, fontSize: 16, transition: 'all 0.12s' }}
+            onMouseEnter={e => e.currentTarget.style.background = S.surface3}
+            onMouseLeave={e => e.currentTarget.style.background = S.surface2}
+          >×</button>
         </div>
-        <div style={{ padding: 20 }}>
-          {children}
-        </div>
+        <div style={{ padding: 20 }}>{children}</div>
       </div>
     </div>
   );
 }
-
 export function ModalFooter({ children }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, paddingTop: 16, borderTop: `1px solid ${t.border}`, marginTop: 16 }}>
+    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, paddingTop: 16, borderTop: `1px solid ${S.border}`, marginTop: 16 }}>
       {children}
+    </div>
+  );
+}
+
+// ── Divider ──
+export function Divider({ style = {} }) {
+  return <div style={{ height: 1, background: S.border, ...style }} />;
+}
+
+// ── Empty state ──
+export function Empty({ message = 'No hay datos' }) {
+  return (
+    <div style={{ padding: '52px 0', textAlign: 'center', color: S.text3, fontSize: 13 }}>
+      {message}
     </div>
   );
 }
