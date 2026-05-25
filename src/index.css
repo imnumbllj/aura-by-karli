@@ -1,33 +1,26 @@
 @import "tailwindcss";
 
-@theme {
-  --color-rose-brand: #c2185b;
-  --color-rose-light: #f8bbd9;
-  --color-rose-pale: #fce4ec;
-  --color-gold: #d4a017;
-  --color-dark: #1a0a12;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  background: #fdf6f9;
-  color: #1a0a12;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #F4F4F5;
+  color: #09090B;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #fce4ec;
-}
-::-webkit-scrollbar-thumb {
-  background: #c2185b;
-  border-radius: 3px;
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D4D4D8; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #A1A1AA; }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 14px;
 }

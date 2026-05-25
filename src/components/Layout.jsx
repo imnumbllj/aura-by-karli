@@ -1,63 +1,69 @@
-import { NavLink, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard, ShoppingCart, Package, Gift, TrendingUp, Settings,
-} from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { LayoutDashboard, ShoppingCart, Package, Gift, TrendingUp, Settings2 } from 'lucide-react';
 
-const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/inventario', label: 'Inventario', icon: Package },
-  { to: '/compras', label: 'Compras', icon: ShoppingCart },
-  { to: '/creador', label: 'Creador de Regalos', icon: Gift },
-  { to: '/ventas', label: 'Ventas', icon: TrendingUp },
-  { to: '/productos', label: 'Productos', icon: Settings },
+const NAV = [
+  { to: '/',           label: 'Dashboard',          icon: LayoutDashboard },
+  { to: '/inventario', label: 'Inventario',          icon: Package },
+  { to: '/compras',    label: 'Compras',             icon: ShoppingCart },
+  { to: '/creador',    label: 'Creador de Regalos',  icon: Gift },
+  { to: '/ventas',     label: 'Ventas',              icon: TrendingUp },
+  { to: '/productos',  label: 'Productos',           icon: Settings2 },
 ];
 
 export default function Layout({ children }) {
   return (
-    <div className="flex min-h-screen bg-[#f7f0f4]">
-      {/* Sidebar */}
-      <aside className="w-60 shrink-0 flex flex-col" style={{ background: 'linear-gradient(180deg, #1a0a12 0%, #2d1020 100%)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#F4F4F5' }}>
+
+      {/* ── Sidebar ── */}
+      <aside style={{
+        width: 220,
+        flexShrink: 0,
+        background: '#0C0A0B',
+        display: 'flex',
+        flexDirection: 'column',
+        borderRight: '1px solid rgba(255,255,255,0.06)',
+      }}>
 
         {/* Brand */}
-        <div className="px-6 pt-7 pb-6">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base font-black"
-              style={{ background: 'linear-gradient(135deg, #c2185b, #e91e8c)' }}>
-              A
-            </div>
+        <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              width: 28, height: 28, borderRadius: 7, flexShrink: 0,
+              background: 'linear-gradient(135deg, #C2185B 0%, #E91E8C 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 13, fontWeight: 800, color: '#fff', letterSpacing: '-0.5px',
+            }}>A</div>
             <div>
-              <p className="text-white font-bold text-sm leading-tight tracking-wide">Aura by Karli</p>
-              <p className="text-[11px] leading-tight" style={{ color: 'rgba(248,187,217,0.5)' }}>Negocio de Regalos</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: '#FAFAFA', letterSpacing: '-0.2px', lineHeight: 1.2 }}>
+                Aura by Karli
+              </p>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 1 }}>
+                Gestión interna
+              </p>
             </div>
           </div>
         </div>
 
-        <div className="mx-6 mb-5 h-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
-
         {/* Nav */}
-        <nav className="flex-1 px-3 flex flex-col gap-0.5">
-          <p className="text-[10px] font-semibold uppercase tracking-widest px-3 mb-2" style={{ color: 'rgba(248,187,217,0.35)' }}>
+        <nav style={{ flex: 1, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', padding: '8px 8px 6px' }}>
             Módulos
           </p>
-          {navItems.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === '/'}
-              className={({ isActive }) =>
-                `group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150 ${
-                  isActive
-                    ? 'text-white'
-                    : 'text-white/50 hover:text-white/80'
-                }`
-              }
-              style={({ isActive }) => isActive
-                ? { background: 'rgba(194,24,91,0.25)', boxShadow: 'inset 3px 0 0 #c2185b' }
-                : {}}
-            >
+          {NAV.map(({ to, label, icon: Icon }) => (
+            <NavLink key={to} to={to} end={to === '/'}
+              style={({ isActive }) => ({
+                display: 'flex', alignItems: 'center', gap: 9,
+                padding: '7px 10px', borderRadius: 7,
+                fontSize: 13, fontWeight: isActive ? 500 : 400,
+                color: isActive ? '#FAFAFA' : 'rgba(255,255,255,0.4)',
+                background: isActive ? 'rgba(255,255,255,0.08)' : 'transparent',
+                textDecoration: 'none',
+                transition: 'all 0.12s',
+                borderLeft: isActive ? '2px solid #C2185B' : '2px solid transparent',
+              })}>
               {({ isActive }) => (
                 <>
-                  <Icon size={16} className={isActive ? 'text-[#f48fb1]' : 'text-white/40 group-hover:text-white/60'} />
+                  <Icon size={15} style={{ color: isActive ? '#F48FB1' : 'rgba(255,255,255,0.3)', flexShrink: 0 }} />
                   {label}
                 </>
               )}
@@ -66,20 +72,22 @@ export default function Layout({ children }) {
         </nav>
 
         {/* Footer */}
-        <div className="px-6 py-5">
-          <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <p className="text-[11px] font-semibold text-white/50">Modo local</p>
-            <p className="text-[10px] text-white/25 mt-0.5">Datos en este navegador</p>
+        <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{
+            background: 'rgba(255,255,255,0.04)', borderRadius: 8,
+            padding: '8px 12px', border: '1px solid rgba(255,255,255,0.06)',
+          }}>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}>
+              Datos locales · v0.1
+            </p>
           </div>
         </div>
       </aside>
 
-      {/* Content */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <main className="flex-1 p-7 overflow-auto">
-          {children}
-        </main>
-      </div>
+      {/* ── Main ── */}
+      <main style={{ flex: 1, minWidth: 0, padding: '32px 36px', overflowY: 'auto' }}>
+        {children}
+      </main>
     </div>
   );
 }

@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 import { useInventario } from '../store/useStore';
-import { Package, TrendingUp, AlertTriangle, DollarSign, ArrowRight } from 'lucide-react';
+import { Package, TrendingUp, AlertTriangle, DollarSign } from 'lucide-react';
+import { PageHeader, t } from '../components/UI';
 import comprasData from '../data/compras.json';
 import ventasData from '../data/ventas.json';
 
-function StatCard({ icon: Icon, label, value, sub, accent }) {
+function StatCard({ icon: Icon, label, value, accent = t.accent }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: '1px solid #f0e6eb' }}>
-      <div className="flex items-start justify-between mb-4">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: accent + '18' }}>
-          <Icon size={18} style={{ color: accent }} />
+    <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: '18px 20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ width: 32, height: 32, borderRadius: 8, background: accent + '14', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon size={15} style={{ color: accent }} />
         </div>
       </div>
-      <p className="text-2xl font-bold text-[#1a0a12] leading-none mb-1">{value}</p>
-      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{label}</p>
-      {sub && <p className="text-[11px] text-gray-300 mt-1">{sub}</p>}
+      <p style={{ fontSize: 22, fontWeight: 700, color: t.text1, letterSpacing: '-0.5px', lineHeight: 1 }}>{value}</p>
+      <p style={{ fontSize: 12, color: t.text3, marginTop: 5, fontWeight: 500 }}>{label}</p>
     </div>
   );
 }
@@ -23,59 +23,60 @@ export default function Dashboard() {
   const { inventario } = useInventario();
 
   const stats = useMemo(() => {
-    const stockItems = Object.entries(inventario);
-    const totalProductos = stockItems.length;
-    const bajoStock = stockItems.filter(([, v]) => v.stockActual <= 5).length;
-    const totalInvertido = comprasData.reduce((s, c) => s + (c['Costo T'] || 0), 0);
-    const totalVentas = ventasData.reduce((s, v) => s + (v.total || 0), 0);
-    return { totalProductos, bajoStock, totalInvertido, totalVentas };
+    const entries = Object.entries(inventario);
+    return {
+      totalProductos:  entries.length,
+      bajoStock:       entries.filter(([, v]) => v.stockActual <= 5).length,
+      totalInvertido:  comprasData.reduce((s, c) => s + (c['Costo T'] || 0), 0),
+      totalVentas:     ventasData.reduce((s, v) => s + (v.total || 0), 0),
+    };
   }, [inventario]);
 
-  const bajoStockItems = useMemo(() => {
-    return Object.entries(inventario)
+  const alertas = useMemo(() =>
+    Object.entries(inventario)
       .filter(([, v]) => v.stockActual <= 5)
       .sort((a, b) => a[1].stockActual - b[1].stockActual)
-      .slice(0, 8);
-  }, [inventario]);
+      .slice(0, 8),
+    [inventario]);
 
   const fmt = (n) => `$${Number(n).toLocaleString('es-DO')}`;
 
   return (
-    <div className="max-w-5xl">
-      {/* Header */}
-      <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-[#c2185b] mb-1">Panel principal</p>
-        <h1 className="text-3xl font-bold text-[#1a0a12]">Dashboard</h1>
-      </div>
+    <div style={{ maxWidth: 900 }}>
+      <PageHeader eyebrow="Panel principal" title="Dashboard" />
 
       {/* Stats */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={Package}       label="Productos"      value={stats.totalProductos} sub={`${stats.totalProductos} tipos en inventario`} accent="#c2185b" />
-        <StatCard icon={AlertTriangle} label="Bajo stock"     value={stats.bajoStock}      sub="5 unidades o menos"   accent="#f59e0b" />
-        <StatCard icon={DollarSign}    label="Total invertido" value={fmt(stats.totalInvertido)} sub="en compras"      accent="#10b981" />
-        <StatCard icon={TrendingUp}    label="Total ventas"   value={fmt(stats.totalVentas)} sub="en regalos"          accent="#8b5cf6" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 28 }}>
+        <StatCard icon={Package}       label="Productos en stock"   value={stats.totalProductos} accent="#C2185B" />
+        <StatCard icon={AlertTriangle} label="Bajo stock"           value={stats.bajoStock}      accent="#D97706" />
+        <StatCard icon={DollarSign}    label="Total invertido"      value={fmt(stats.totalInvertido)} accent="#059669" />
+        <StatCard icon={TrendingUp}    label="Total ventas"         value={fmt(stats.totalVentas)}    accent="#7C3AED" />
       </div>
 
-      {/* Bajo stock */}
-      {bajoStockItems.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ border: '1px solid #f0e6eb' }}>
-          <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid #fce4ec' }}>
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center">
-                <AlertTriangle size={14} className="text-amber-500" />
-              </div>
-              <h2 className="font-semibold text-[#1a0a12] text-sm">Productos con bajo stock</h2>
+      {/* Alertas */}
+      {alertas.length > 0 && (
+        <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, overflow: 'hidden' }}>
+          <div style={{ padding: '14px 20px', borderBottom: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <AlertTriangle size={14} style={{ color: '#D97706' }} />
+              <span style={{ fontSize: 13, fontWeight: 600, color: t.text1 }}>Productos con bajo stock</span>
             </div>
-            <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">
-              {bajoStockItems.length} alertas
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#D97706', background: '#FFFBEB', padding: '3px 10px', borderRadius: 99, border: '1px solid #FDE68A' }}>
+              {alertas.length} alertas
             </span>
           </div>
-          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-            {bajoStockItems.map(([nombre, data]) => (
-              <div key={nombre} className="flex items-center justify-between rounded-xl px-4 py-3"
-                style={{ background: data.stockActual === 0 ? '#fff5f5' : '#fffbeb', border: `1px solid ${data.stockActual === 0 ? '#fecaca' : '#fde68a'}` }}>
-                <span className="text-xs font-medium text-gray-700 truncate mr-2 leading-snug">{nombre}</span>
-                <span className={`text-sm font-bold shrink-0 ${data.stockActual === 0 ? 'text-red-500' : 'text-amber-600'}`}>
+          <div style={{ padding: 12, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+            {alertas.map(([nombre, data]) => (
+              <div key={nombre} style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '9px 12px', borderRadius: 9,
+                background: data.stockActual === 0 ? '#FEF2F2' : '#FFFBEB',
+                border: `1px solid ${data.stockActual === 0 ? '#FECACA' : '#FDE68A'}`,
+              }}>
+                <span style={{ fontSize: 12, color: t.text2, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginRight: 8 }}>
+                  {nombre}
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 700, flexShrink: 0, color: data.stockActual === 0 ? '#DC2626' : '#D97706' }}>
                   {data.stockActual}
                 </span>
               </div>

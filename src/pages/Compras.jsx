@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { useCompras, useProductos } from '../store/useStore';
 import { Plus, Trash2, Search, ChevronDown, ShoppingCart } from 'lucide-react';
+import { PageHeader, Btn, Modal, ModalFooter, Label, Input, Select, Badge, t } from '../components/UI';
 
 function NuevaCompraForm({ onClose, productos, registrar }) {
   const hoy = new Date().toISOString().split('T')[0];
-  const [fecha, setFecha] = useState(hoy);
-  const [items, setItems] = useState([{ producto: '', cantidad: '', costoTotal: '' }]);
+  const [fecha,  setFecha]  = useState(hoy);
+  const [items,  setItems]  = useState([{ producto: '', cantidad: '', costoTotal: '' }]);
 
-  const addItem = () => setItems(p => [...p, { producto: '', cantidad: '', costoTotal: '' }]);
-  const removeItem = (i) => setItems(p => p.filter((_, idx) => idx !== i));
-  const updateItem = (i, f, v) => setItems(p => p.map((it, idx) => idx === i ? { ...it, [f]: v } : it));
+  const addItem    = () => setItems(p => [...p, { producto: '', cantidad: '', costoTotal: '' }]);
+  const removeItem = (i) => setItems(p => p.filter((_, x) => x !== i));
+  const update     = (i, f, v) => setItems(p => p.map((it, x) => x === i ? { ...it, [f]: v } : it));
 
   const subtotal = items.reduce((s, it) => s + (Number(it.costoTotal) || 0), 0);
-  const fmt = (n) => `$${Number(n || 0).toLocaleString('es-DO')}`;
+  const fmt      = (n) => `$${Number(n || 0).toLocaleString('es-DO')}`;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,99 +27,63 @@ function NuevaCompraForm({ onClose, productos, registrar }) {
     onClose();
   };
 
-  const prodOrdenados = productos.filter(p => p.activo).sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
+  const prods = productos.filter(p => p.activo).sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(26,10,18,0.5)', backdropFilter: 'blur(4px)' }}>
-      <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden">
-        {/* Modal header */}
-        <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: '1px solid #fce4ec' }}>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#fce4ec' }}>
-              <ShoppingCart size={16} className="text-[#c2185b]" />
-            </div>
-            <div>
-              <h3 className="font-bold text-[#1a0a12]">Nueva Compra</h3>
-              <p className="text-xs text-gray-400">Registra los productos adquiridos</p>
-            </div>
-          </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors text-lg leading-none">
-            &times;
-          </button>
+    <Modal onClose={onClose} title="Nueva Compra" subtitle="Registra los productos adquiridos" icon={ShoppingCart}>
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: 16 }}>
+          <Label>Fecha de compra</Label>
+          <Input type="date" value={fecha} onChange={e => setFecha(e.target.value)} style={{ width: 180 }} />
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Fecha */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Fecha de compra</label>
-            <input type="date" value={fecha} onChange={e => setFecha(e.target.value)}
-              className="border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20 w-full max-w-xs"
-              style={{ borderColor: '#e8d8e0' }} />
-          </div>
+        {/* Items header */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 72px 100px 32px', gap: 8, marginBottom: 8 }}>
+          {['Producto', 'Cant.', 'Costo total', ''].map(h => (
+            <p key={h} style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</p>
+          ))}
+        </div>
 
-          {/* Items */}
-          <div>
-            <div className="grid grid-cols-[1fr_78px_100px_36px] gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">
-              <span>Producto</span><span>Cant.</span><span>Costo total</span><span></span>
-            </div>
-            <div className="space-y-2">
-              {items.map((it, i) => (
-                <div key={i} className="grid grid-cols-[1fr_78px_100px_36px] gap-2 items-center">
-                  <select value={it.producto} onChange={e => updateItem(i, 'producto', e.target.value)}
-                    className="border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20 bg-white text-gray-800"
-                    style={{ borderColor: '#e8d8e0' }}>
-                    <option value="">Seleccionar...</option>
-                    {prodOrdenados.map(p => <option key={p.id} value={p.nombreCompleto}>{p.nombreCompleto}</option>)}
-                  </select>
-                  <input type="number" min="0" placeholder="0" value={it.cantidad} onChange={e => updateItem(i, 'cantidad', e.target.value)}
-                    className="border rounded-xl px-3 py-2.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20"
-                    style={{ borderColor: '#e8d8e0' }} />
-                  <input type="number" min="0" placeholder="0" value={it.costoTotal} onChange={e => updateItem(i, 'costoTotal', e.target.value)}
-                    className="border rounded-xl px-3 py-2.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20"
-                    style={{ borderColor: '#e8d8e0' }} />
-                  <button type="button" onClick={() => removeItem(i)}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors">
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-            <button type="button" onClick={addItem}
-              className="flex items-center gap-1.5 text-sm font-medium text-[#c2185b] hover:text-[#ad1457] mt-3 transition-colors">
-              <Plus size={14} /> Agregar producto
-            </button>
-          </div>
-
-          {/* Footer */}
-          <div className="flex items-center justify-between pt-4" style={{ borderTop: '1px solid #fce4ec' }}>
-            <div>
-              <p className="text-xs text-gray-400">Total de la compra</p>
-              <p className="text-lg font-bold text-[#1a0a12]">{fmt(subtotal)}</p>
-            </div>
-            <div className="flex gap-2.5">
-              <button type="button" onClick={onClose}
-                className="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
-                style={{ border: '1px solid #e5e7eb' }}>
-                Cancelar
-              </button>
-              <button type="submit"
-                className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors hover:bg-[#ad1457]"
-                style={{ background: '#c2185b' }}>
-                Registrar compra
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
+          {items.map((it, i) => (
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 72px 100px 32px', gap: 8, alignItems: 'center' }}>
+              <Select value={it.producto} onChange={e => update(i, 'producto', e.target.value)}>
+                <option value="">Seleccionar...</option>
+                {prods.map(p => <option key={p.id} value={p.nombreCompleto}>{p.nombreCompleto}</option>)}
+              </Select>
+              <Input type="number" min="0" placeholder="0" value={it.cantidad} onChange={e => update(i, 'cantidad', e.target.value)} style={{ textAlign: 'right' }} />
+              <Input type="number" min="0" placeholder="0" value={it.costoTotal} onChange={e => update(i, 'costoTotal', e.target.value)} style={{ textAlign: 'right' }} />
+              <button type="button" onClick={() => removeItem(i)} style={{ width: 32, height: 32, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3 }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; }}>
+                <Trash2 size={13} />
               </button>
             </div>
+          ))}
+        </div>
+
+        <button type="button" onClick={addItem} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: t.accent, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>
+          <Plus size={13} /> Agregar producto
+        </button>
+
+        <ModalFooter>
+          <div style={{ marginRight: 'auto', textAlign: 'left' }}>
+            <p style={{ fontSize: 11, color: t.text3, fontWeight: 500 }}>Total</p>
+            <p style={{ fontSize: 16, fontWeight: 700, color: t.text1, letterSpacing: '-0.3px' }}>{fmt(subtotal)}</p>
           </div>
-        </form>
-      </div>
-    </div>
+          <Btn variant="ghost" onClick={onClose}>Cancelar</Btn>
+          <Btn type="submit" variant="primary">Registrar compra</Btn>
+        </ModalFooter>
+      </form>
+    </Modal>
   );
 }
 
 export default function Compras() {
   const { compras, registrar } = useCompras();
-  const { productos } = useProductos();
-  const [search, setSearch] = useState('');
-  const [showForm, setShowForm] = useState(false);
+  const { productos }          = useProductos();
+  const [search,     setSearch]     = useState('');
+  const [showForm,   setShowForm]   = useState(false);
   const [expandedId, setExpandedId] = useState(null);
 
   const fmt = (n) => `$${Number(n || 0).toLocaleString('es-DO')}`;
@@ -132,95 +97,87 @@ export default function Compras() {
       return acc;
     }, {});
 
-  const groups = Object.values(grouped).sort((a, b) => (b.fecha > a.fecha ? 1 : -1)).slice(0, 50);
-
-  const totalInvertido = compras.reduce((s, c) => s + (c['Costo T'] || 0), 0);
+  const groups        = Object.values(grouped).sort((a, b) => b.fecha > a.fecha ? 1 : -1).slice(0, 50);
+  const totalInv      = compras.reduce((s, c) => s + (c['Costo T'] || 0), 0);
+  const totalOrdenes  = Object.keys(grouped).length;
 
   return (
-    <div className="max-w-4xl">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#c2185b] mb-1">Registro de compras</p>
-          <h1 className="text-3xl font-bold text-[#1a0a12]">Compras</h1>
-        </div>
-        <button onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm hover:bg-[#ad1457] transition-colors mt-1"
-          style={{ background: '#c2185b' }}>
-          <Plus size={15} /> Nueva Compra
-        </button>
+    <div style={{ maxWidth: 860 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28 }}>
+        <PageHeader eyebrow="Registro de compras" title="Compras" />
+        <Btn onClick={() => setShowForm(true)} style={{ marginTop: 2 }}>
+          <Plus size={13} /> Nueva Compra
+        </Btn>
       </div>
 
-      {/* Summary bar */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-white rounded-2xl px-5 py-4 shadow-sm" style={{ border: '1px solid #f0e6eb' }}>
-          <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-1">Total invertido</p>
-          <p className="text-2xl font-bold text-[#1a0a12]">{fmt(totalInvertido)}</p>
-        </div>
-        <div className="bg-white rounded-2xl px-5 py-4 shadow-sm" style={{ border: '1px solid #f0e6eb' }}>
-          <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-1">Órdenes de compra</p>
-          <p className="text-2xl font-bold text-[#1a0a12]">{Object.keys(grouped).length}</p>
-        </div>
+      {/* Summary */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+        {[
+          { label: 'Total invertido',    value: fmt(totalInv) },
+          { label: 'Órdenes de compra',  value: totalOrdenes  },
+        ].map(({ label, value }) => (
+          <div key={label} style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: '16px 20px' }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{label}</p>
+            <p style={{ fontSize: 20, fontWeight: 700, color: t.text1, letterSpacing: '-0.4px' }}>{value}</p>
+          </div>
+        ))}
       </div>
 
       {/* Search */}
-      <div className="relative mb-5">
-        <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+      <div style={{ position: 'relative', marginBottom: 14 }}>
+        <Search size={13} style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: t.text3 }} />
         <input
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20"
-          style={{ border: '1px solid #e8d8e0' }}
-          placeholder="Buscar por producto o ID de compra..."
+          style={{ width: '100%', height: 34, borderRadius: 8, paddingLeft: 32, paddingRight: 12, border: `1px solid ${t.border}`, background: t.surface, fontSize: 13, outline: 'none', fontFamily: 'inherit', color: t.text1 }}
+          placeholder="Buscar por producto o ID..."
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
       </div>
 
-      {/* Accordion list */}
-      <div className="space-y-2">
+      {/* List */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {groups.length === 0 && (
-          <div className="text-center py-14 text-gray-400 bg-white rounded-2xl" style={{ border: '1px solid #f0e6eb' }}>
+          <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: '48px 0', textAlign: 'center', color: t.text3, fontSize: 13 }}>
             No se encontraron compras
           </div>
         )}
         {groups.map(g => (
-          <div key={g.id} className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ border: '1px solid #f0e6eb' }}>
+          <div key={g.id} style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, overflow: 'hidden' }}>
             <button
-              className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors hover:bg-[#fdf6f9]"
-              onClick={() => setExpandedId(expandedId === g.id ? null : g.id)}>
-              <div className="flex items-center gap-4">
-                <span className="text-xs font-bold font-mono px-2.5 py-1 rounded-lg text-[#c2185b]" style={{ background: '#fce4ec' }}>
+              onClick={() => setExpandedId(expandedId === g.id ? null : g.id)}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }}
+              onMouseEnter={e => e.currentTarget.style.background = '#FAFAFA'}
+              onMouseLeave={e => e.currentTarget.style.background = 'none'}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, fontFamily: 'monospace', background: t.accentBg, color: t.accent, padding: '3px 8px', borderRadius: 6 }}>
                   {g.id}
                 </span>
-                <span className="text-sm text-gray-500">{g.fecha}</span>
-                <span className="text-xs text-gray-400 hidden sm:inline">
-                  {g.items.length} producto{g.items.length !== 1 ? 's' : ''}
-                </span>
+                <span style={{ fontSize: 12, color: t.text3 }}>{g.fecha}</span>
+                <span style={{ fontSize: 12, color: t.text3 }}>{g.items.length} producto{g.items.length !== 1 ? 's' : ''}</span>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-[#1a0a12]">{fmt(g.total)}</span>
-                <ChevronDown size={15} className={`text-gray-400 transition-transform duration-200 ${expandedId === g.id ? 'rotate-180' : ''}`} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: t.text1 }}>{fmt(g.total)}</span>
+                <ChevronDown size={14} style={{ color: t.text3, transform: expandedId === g.id ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
               </div>
             </button>
 
             {expandedId === g.id && (
-              <div style={{ borderTop: '1px solid #fce4ec' }}>
-                <table className="w-full text-sm">
+              <div style={{ borderTop: `1px solid ${t.border}` }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
-                    <tr style={{ background: '#fdf6f9', borderBottom: '1px solid #fce4ec' }}>
-                      <th className="text-left px-5 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Producto</th>
-                      <th className="text-center px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Cant.</th>
-                      <th className="text-right px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">C. Unitario</th>
-                      <th className="text-right px-5 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">C. Total</th>
+                    <tr style={{ background: '#FAFAFA', borderBottom: `1px solid ${t.border}` }}>
+                      {[['Producto', 'left'], ['Cant.', 'center'], ['C. Unitario', 'right'], ['C. Total', 'right']].map(([h, a]) => (
+                        <th key={h} style={{ padding: '9px 16px', textAlign: a, fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
                     {g.items.map((item, i) => (
-                      <tr key={i} className="hover:bg-[#fdf6f9] transition-colors"
-                        style={{ borderBottom: i < g.items.length - 1 ? '1px solid #fce4ec' : 'none' }}>
-                        <td className="px-5 py-3 text-gray-700">{item.Producto}</td>
-                        <td className="px-4 py-3 text-center text-gray-500">{item.Cantidad}</td>
-                        <td className="px-4 py-3 text-right text-gray-500">{fmt(item['Costo U'])}</td>
-                        <td className="px-5 py-3 text-right font-semibold text-gray-800">{fmt(item['Costo T'])}</td>
+                      <tr key={i} style={{ borderTop: i > 0 ? `1px solid ${t.borderSub}` : 'none' }}>
+                        <td style={{ padding: '10px 16px', color: t.text2 }}>{item.Producto}</td>
+                        <td style={{ padding: '10px 16px', textAlign: 'center', color: t.text3 }}>{item.Cantidad}</td>
+                        <td style={{ padding: '10px 16px', textAlign: 'right', color: t.text3 }}>{fmt(item['Costo U'])}</td>
+                        <td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 600, color: t.text1 }}>{fmt(item['Costo T'])}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -230,7 +187,7 @@ export default function Compras() {
           </div>
         ))}
       </div>
-      <p className="text-xs text-gray-400 mt-3 text-right">Mostrando últimas 50 órdenes</p>
+      <p style={{ fontSize: 11, color: t.text3, textAlign: 'right', marginTop: 10 }}>Últimas 50 órdenes</p>
 
       {showForm && <NuevaCompraForm onClose={() => setShowForm(false)} productos={productos} registrar={registrar} />}
     </div>

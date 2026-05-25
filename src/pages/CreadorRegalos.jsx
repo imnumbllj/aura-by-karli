@@ -1,151 +1,139 @@
 import { useState, useMemo } from 'react';
 import { useProductos, useInventario } from '../store/useStore';
-import { Plus, Trash2, Gift, Sparkles } from 'lucide-react';
+import { Plus, Trash2, Gift } from 'lucide-react';
+import { PageHeader, Label, Input, Select, Btn, t } from '../components/UI';
 
 export default function CreadorRegalos() {
   const { productos } = useProductos();
   const { inventario } = useInventario();
 
-  const [nombreRegalo, setNombreRegalo] = useState('');
-  const [ganancia, setGanancia] = useState(35);
-  const [manoDeObra, setManoDeObra] = useState(500);
-  const [items, setItems] = useState([{ producto: '', cantidad: 1 }]);
+  const [nombre,      setNombre]      = useState('');
+  const [ganancia,    setGanancia]    = useState(35);
+  const [manoDeObra,  setManoDeObra]  = useState(500);
+  const [items,       setItems]       = useState([{ producto: '', cantidad: 1 }]);
 
-  const addItem = () => setItems(p => [...p, { producto: '', cantidad: 1 }]);
-  const removeItem = (i) => setItems(p => p.filter((_, idx) => idx !== i));
-  const updateItem = (i, field, val) => setItems(p => p.map((it, idx) => idx === i ? { ...it, [field]: val } : it));
+  const addItem    = () => setItems(p => [...p, { producto: '', cantidad: 1 }]);
+  const removeItem = (i) => setItems(p => p.filter((_, x) => x !== i));
+  const update     = (i, f, v) => setItems(p => p.map((it, x) => x === i ? { ...it, [f]: v } : it));
 
-  const calculos = useMemo(() => {
-    let costoMateriales = 0;
+  const calc = useMemo(() => {
+    let materiales = 0;
     const detalle = items.map(it => {
       if (!it.producto || !it.cantidad) return { ...it, costoU: 0, costoT: 0 };
-      const inv = inventario[it.producto];
-      const costoU = inv?.costoPromedio || 0;
+      const costoU = inventario[it.producto]?.costoPromedio || 0;
       const costoT = costoU * Number(it.cantidad);
-      costoMateriales += costoT;
+      materiales += costoT;
       return { ...it, costoU, costoT };
     });
-    const costoTotal = costoMateriales + Number(manoDeObra);
+    const costoTotal  = materiales + Number(manoDeObra);
     const precioVenta = costoTotal / (1 - Number(ganancia) / 100);
-    const gananciaAbsoluta = precioVenta - costoTotal;
-    return { detalle, costoMateriales, costoTotal, precioVenta, gananciaAbsoluta };
+    return { detalle, materiales, costoTotal, precioVenta, gananciaAbs: precioVenta - costoTotal };
   }, [items, inventario, ganancia, manoDeObra]);
 
-  const fmt = (n) => `$${Number(n || 0).toLocaleString('es-DO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-  const productosActivos = productos.filter(p => p.activo).sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
+  const fmt  = (n) => `$${Number(n || 0).toLocaleString('es-DO', { maximumFractionDigits: 0 })}`;
+  const prods = productos.filter(p => p.activo).sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
 
   return (
-    <div className="max-w-3xl">
-      {/* Header */}
-      <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-[#c2185b] mb-1">Calculadora de precios</p>
-        <h1 className="text-3xl font-bold text-[#1a0a12]">Creador de Regalos</h1>
-      </div>
+    <div style={{ maxWidth: 720 }}>
+      <PageHeader eyebrow="Calculadora de precios" title="Creador de Regalos" />
 
-      <div className="grid grid-cols-1 gap-5">
-        {/* Config card */}
-        <div className="bg-white rounded-2xl shadow-sm p-6" style={{ border: '1px solid #f0e6eb' }}>
-          <h2 className="text-sm font-semibold text-gray-700 mb-5">Configuración del regalo</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-          <div className="mb-5">
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Nombre del regalo</label>
-            <input type="text" value={nombreRegalo} onChange={e => setNombreRegalo(e.target.value)}
-              placeholder="Ej: Aura Pink, Rey de Corazones..."
-              className="w-full rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20"
-              style={{ border: '1px solid #e8d8e0' }} />
+        {/* Config */}
+        <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: 20 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: t.text2, marginBottom: 16, letterSpacing: '-0.1px' }}>Configuración</p>
+
+          <div style={{ marginBottom: 16 }}>
+            <Label>Nombre del regalo</Label>
+            <Input value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Aura Pink, Rey de Corazones..." />
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                % Ganancia — <span className="text-[#c2185b] font-bold">{ganancia}%</span>
-              </label>
+              <Label>% Ganancia — <span style={{ color: t.accent, fontWeight: 700 }}>{ganancia}%</span></Label>
               <input type="range" min="10" max="70" step="5" value={ganancia}
                 onChange={e => setGanancia(e.target.value)}
-                className="w-full accent-[#c2185b] mt-1" />
-              <div className="flex justify-between text-[10px] text-gray-400 mt-1">
-                <span>10%</span><span>70%</span>
+                style={{ width: '100%', accentColor: t.accent, cursor: 'pointer', marginTop: 6 }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+                <span style={{ fontSize: 10, color: t.text3 }}>10%</span>
+                <span style={{ fontSize: 10, color: t.text3 }}>70%</span>
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mano de obra ($)</label>
-              <input type="number" min="0" value={manoDeObra} onChange={e => setManoDeObra(e.target.value)}
-                className="w-full rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20"
-                style={{ border: '1px solid #e8d8e0' }} />
+              <Label>Mano de obra ($)</Label>
+              <Input type="number" min="0" value={manoDeObra} onChange={e => setManoDeObra(e.target.value)} />
             </div>
           </div>
         </div>
 
-        {/* Productos card */}
-        <div className="bg-white rounded-2xl shadow-sm p-6" style={{ border: '1px solid #f0e6eb' }}>
-          <h2 className="text-sm font-semibold text-gray-700 mb-5">Productos del regalo</h2>
+        {/* Products */}
+        <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: 20 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: t.text2, marginBottom: 16 }}>Productos</p>
 
-          <div className="grid grid-cols-[1fr_72px_90px_82px_36px] gap-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-3 px-1">
-            <span>Producto</span><span>Cant.</span><span>Costo U.</span><span>Costo T.</span><span></span>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 68px 90px 80px 32px', gap: 8, marginBottom: 10 }}>
+            {['Producto', 'Cant.', 'Costo U.', 'Costo T.', ''].map(h => (
+              <p key={h} style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</p>
+            ))}
           </div>
 
-          <div className="space-y-2.5">
-            {calculos.detalle.map((it, i) => (
-              <div key={i} className="grid grid-cols-[1fr_72px_90px_82px_36px] gap-2 items-center">
-                <select value={it.producto} onChange={e => updateItem(i, 'producto', e.target.value)}
-                  className="rounded-xl px-3 py-2.5 text-sm bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20"
-                  style={{ border: '1px solid #e8d8e0' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {calc.detalle.map((it, i) => (
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 68px 90px 80px 32px', gap: 8, alignItems: 'center' }}>
+                <Select value={it.producto} onChange={e => update(i, 'producto', e.target.value)}>
                   <option value="">Seleccionar...</option>
-                  {productosActivos.map(p => <option key={p.id} value={p.nombreCompleto}>{p.nombreCompleto}</option>)}
-                </select>
-                <input type="number" min="1" value={it.cantidad} onChange={e => updateItem(i, 'cantidad', e.target.value)}
-                  className="rounded-xl px-3 py-2.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-[#c2185b]/20"
-                  style={{ border: '1px solid #e8d8e0' }} />
-                <div className="rounded-xl px-3 py-2.5 text-sm text-right text-gray-500" style={{ background: '#f9f5f7' }}>
+                  {prods.map(p => <option key={p.id} value={p.nombreCompleto}>{p.nombreCompleto}</option>)}
+                </Select>
+                <Input type="number" min="1" value={it.cantidad} onChange={e => update(i, 'cantidad', e.target.value)} style={{ textAlign: 'right' }} />
+                <div style={{ height: 34, borderRadius: 8, background: '#FAFAFA', border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, color: t.text3 }}>
                   {it.costoU > 0 ? fmt(it.costoU) : '—'}
                 </div>
-                <div className="rounded-xl px-3 py-2.5 text-sm text-right font-semibold text-gray-700" style={{ background: '#f9f5f7' }}>
+                <div style={{ height: 34, borderRadius: 8, background: '#FAFAFA', border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, fontWeight: 600, color: t.text1 }}>
                   {it.costoT > 0 ? fmt(it.costoT) : '—'}
                 </div>
                 <button type="button" onClick={() => removeItem(i)}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors">
-                  <Trash2 size={14} />
+                  style={{ width: 32, height: 32, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, fontFamily: 'inherit' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; }}>
+                  <Trash2 size={13} />
                 </button>
               </div>
             ))}
           </div>
 
-          <button onClick={addItem}
-            className="flex items-center gap-1.5 text-sm font-medium text-[#c2185b] hover:text-[#ad1457] mt-4 transition-colors">
-            <Plus size={14} /> Agregar producto
+          <button onClick={addItem} style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 14, fontSize: 13, fontWeight: 500, color: t.accent, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>
+            <Plus size={13} /> Agregar producto
           </button>
         </div>
 
-        {/* Result card */}
-        <div className="rounded-2xl p-6 text-white shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #c2185b 0%, #7b0d3e 100%)' }}>
-          <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
-              <Gift size={16} />
+        {/* Result */}
+        <div style={{ background: '#0C0A0B', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
+            <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(194,24,91,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Gift size={14} style={{ color: '#F48FB1' }} />
             </div>
             <div>
-              <p className="text-xs text-white/60 uppercase tracking-widest font-semibold">Resultado</p>
-              <p className="font-bold text-base leading-tight">{nombreRegalo || 'Sin nombre'}</p>
+              <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Resultado</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#FAFAFA', letterSpacing: '-0.2px' }}>{nombre || 'Sin nombre'}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 14 }}>
             {[
-              { label: 'Materiales',    value: fmt(calculos.costoMateriales) },
-              { label: 'Mano de obra',  value: fmt(manoDeObra) },
-              { label: 'Costo total',   value: fmt(calculos.costoTotal) },
-              { label: `Ganancia (${ganancia}%)`, value: fmt(calculos.gananciaAbsoluta) },
+              { label: 'Materiales',         value: fmt(calc.materiales) },
+              { label: 'Mano de obra',        value: fmt(manoDeObra) },
+              { label: 'Costo total',         value: fmt(calc.costoTotal) },
+              { label: `Ganancia ${ganancia}%`, value: fmt(calc.gananciaAbs) },
             ].map(({ label, value }) => (
-              <div key={label} className="rounded-xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                <p className="text-[10px] text-white/60 uppercase tracking-wide mb-1 font-semibold">{label}</p>
-                <p className="text-lg font-bold">{value}</p>
+              <div key={label} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 9, padding: '12px 14px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <p style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{label}</p>
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#FAFAFA' }}>{value}</p>
               </div>
             ))}
           </div>
 
-          <div className="rounded-xl p-5 text-center" style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }}>
-            <p className="text-xs text-white/70 uppercase tracking-widest font-semibold mb-2">Precio de venta sugerido</p>
-            <p className="text-5xl font-black tracking-tight">{fmt(calculos.precioVenta)}</p>
+          <div style={{ background: 'rgba(194,24,91,0.15)', borderRadius: 10, padding: '18px 20px', textAlign: 'center', border: '1px solid rgba(194,24,91,0.25)' }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Precio de venta sugerido</p>
+            <p style={{ fontSize: 40, fontWeight: 800, color: '#FAFAFA', letterSpacing: '-1.5px', lineHeight: 1 }}>{fmt(calc.precioVenta)}</p>
           </div>
         </div>
       </div>
