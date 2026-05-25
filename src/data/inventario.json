@@ -1,0 +1,596 @@
+[
+  {
+    "Producto": "Barra de Silicona - ",
+    "Total Comprado": 10,
+    "Costo Promedio": 90,
+    "Stock Actual": 10
+  },
+  {
+    "Producto": "Boligrafo - Corazón",
+    "Total Comprado": 6,
+    "Costo Promedio": 400,
+    "Stock Actual": 6
+  },
+  {
+    "Producto": "Bolsa Celofán - Estándar",
+    "Total Comprado": 5,
+    "Costo Promedio": 80,
+    "Stock Actual": 5
+  },
+  {
+    "Producto": "Bolsa Celofán - Grande",
+    "Total Comprado": 10,
+    "Costo Promedio": 50,
+    "Stock Actual": 10
+  },
+  {
+    "Producto": "Bombones - Bom",
+    "Total Comprado": 20,
+    "Costo Promedio": 60,
+    "Stock Actual": 20
+  },
+  {
+    "Producto": "Bombones - Kiss",
+    "Total Comprado": 80,
+    "Costo Promedio": 50,
+    "Stock Actual": 80
+  },
+  {
+    "Producto": "Caramelos - Rojos",
+    "Total Comprado": 350,
+    "Costo Promedio": 5.142857142857143,
+    "Stock Actual": 350
+  },
+  {
+    "Producto": "Chocolatines - Nutella Stick",
+    "Total Comprado": 30,
+    "Costo Promedio": 50,
+    "Stock Actual": 30
+  },
+  {
+    "Producto": "Cinta - Roja 4cm",
+    "Total Comprado": 5,
+    "Costo Promedio": 80,
+    "Stock Actual": 5
+  },
+  {
+    "Producto": "Cinta - Roja 6mm",
+    "Total Comprado": 5,
+    "Costo Promedio": 35,
+    "Stock Actual": 5
+  },
+  {
+    "Producto": "Cinta - Rosa 4cm",
+    "Total Comprado": 27,
+    "Costo Promedio": 80,
+    "Stock Actual": 27
+  },
+  {
+    "Producto": "Cinta Satin - Rollo",
+    "Total Comprado": 53,
+    "Costo Promedio": 141.50943396226415,
+    "Stock Actual": 53
+  },
+  {
+    "Producto": "Colonias - Varias",
+    "Total Comprado": 8,
+    "Costo Promedio": 1625,
+    "Stock Actual": 8
+  },
+  {
+    "Producto": "Cremas - Varias",
+    "Total Comprado": 2,
+    "Costo Promedio": 800,
+    "Stock Actual": 2
+  },
+  {
+    "Producto": "Delight Chocolate - Cream Wafer",
+    "Total Comprado": 24,
+    "Costo Promedio": 80,
+    "Stock Actual": 24
+  },
+  {
+    "Producto": "Estuche - Perfume/Crema",
+    "Total Comprado": 1,
+    "Costo Promedio": 3000,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Galletas - Bourbon",
+    "Total Comprado": 5,
+    "Costo Promedio": 80,
+    "Stock Actual": 5
+  },
+  {
+    "Producto": "Galletas - Carnaval",
+    "Total Comprado": 12,
+    "Costo Promedio": 120,
+    "Stock Actual": 12
+  },
+  {
+    "Producto": "Galletas - Saladitas",
+    "Total Comprado": 12,
+    "Costo Promedio": 129.16666666666666,
+    "Stock Actual": 12
+  },
+  {
+    "Producto": "Lazos Mágicos - Grandes",
+    "Total Comprado": 10,
+    "Costo Promedio": 80,
+    "Stock Actual": 10
+  },
+  {
+    "Producto": "Lazos Mágicos - Medianos",
+    "Total Comprado": 10,
+    "Costo Promedio": 50,
+    "Stock Actual": 10
+  },
+  {
+    "Producto": "Lazos Mágicos - Pequeños",
+    "Total Comprado": 10,
+    "Costo Promedio": 30,
+    "Stock Actual": 10
+  },
+  {
+    "Producto": "Limpiapipas - Liso",
+    "Total Comprado": 15,
+    "Costo Promedio": 10,
+    "Stock Actual": 15
+  },
+  {
+    "Producto": "Mangas de Uniflor - ",
+    "Total Comprado": 6,
+    "Costo Promedio": 60,
+    "Stock Actual": 6
+  },
+  {
+    "Producto": "Mensajería - Servicio",
+    "Total Comprado": 2,
+    "Costo Promedio": 550,
+    "Stock Actual": 2
+  },
+  {
+    "Producto": "Monedas - Chocolate",
+    "Total Comprado": 124,
+    "Costo Promedio": 25.806451612903224,
+    "Stock Actual": 124
+  },
+  {
+    "Producto": "Nutella - Individual",
+    "Total Comprado": 1,
+    "Costo Promedio": 1000,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Papel - Crepe",
+    "Total Comprado": 500,
+    "Costo Promedio": 3,
+    "Stock Actual": 500
+  },
+  {
+    "Producto": "Papel - Regalo Rosado",
+    "Total Comprado": 3,
+    "Costo Promedio": 120,
+    "Stock Actual": 3
+  },
+  {
+    "Producto": "Paquetes - Mariposas",
+    "Total Comprado": 36,
+    "Costo Promedio": 66.66666666666667,
+    "Stock Actual": 36
+  },
+  {
+    "Producto": "Paquetes - Palitos",
+    "Total Comprado": 80,
+    "Costo Promedio": 10,
+    "Stock Actual": 80
+  },
+  {
+    "Producto": "Pega - Fuerte 30ml",
+    "Total Comprado": 1,
+    "Costo Promedio": 800,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Pega - Piedra 30ml",
+    "Total Comprado": 1,
+    "Costo Promedio": 800,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Peluche - Capibara",
+    "Total Comprado": 2,
+    "Costo Promedio": 2400,
+    "Stock Actual": 2
+  },
+  {
+    "Producto": "Pétalos - Corazón",
+    "Total Comprado": 1,
+    "Costo Promedio": 600,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Planilla - Pegatinas",
+    "Total Comprado": 1,
+    "Costo Promedio": 400,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Plumas - Blancas",
+    "Total Comprado": 1,
+    "Costo Promedio": 500,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Plumas - Rojas",
+    "Total Comprado": 1,
+    "Costo Promedio": 500,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Plumas - Rosas",
+    "Total Comprado": 1,
+    "Costo Promedio": 500,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Sorbetos - Dark",
+    "Total Comprado": 30,
+    "Costo Promedio": 51.666666666666664,
+    "Stock Actual": 30
+  },
+  {
+    "Producto": "Sorbetos - First",
+    "Total Comprado": 29,
+    "Costo Promedio": 67.58620689655173,
+    "Stock Actual": 29
+  },
+  {
+    "Producto": "Stickers - Corazones",
+    "Total Comprado": 2,
+    "Costo Promedio": 350,
+    "Stock Actual": 2
+  },
+  {
+    "Producto": "Tazas - Cristal",
+    "Total Comprado": 6,
+    "Costo Promedio": 866.6666666666666,
+    "Stock Actual": 6
+  },
+  {
+    "Producto": "Vaso - Plástico",
+    "Total Comprado": 1,
+    "Costo Promedio": 900,
+    "Stock Actual": 1
+  },
+  {
+    "Producto": "Vino - Blanco",
+    "Total Comprado": 5,
+    "Costo Promedio": 1010,
+    "Stock Actual": 5
+  },
+  {
+    "Producto": "Vino - Tinto",
+    "Total Comprado": 5,
+    "Costo Promedio": 910,
+    "Stock Actual": 5
+  },
+  {
+    "Producto": "Whiskey - Kings Gold",
+    "Total Comprado": 5,
+    "Costo Promedio": 1100,
+    "Stock Actual": 5
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  },
+  {
+    "Producto": 0,
+    "Total Comprado": 0,
+    "Costo Promedio": "",
+    "Stock Actual": 0
+  }
+]

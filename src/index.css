@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --color-rose-brand: #c2185b;
+  --color-rose-light: #f8bbd9;
+  --color-rose-pale: #fce4ec;
+  --color-gold: #d4a017;
+  --color-dark: #1a0a12;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #fdf6f9;
+  color: #1a0a12;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #fce4ec;
+}
+::-webkit-scrollbar-thumb {
+  background: #c2185b;
+  border-radius: 3px;
+}
