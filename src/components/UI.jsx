@@ -205,9 +205,10 @@ export function Modal({ onClose, title, subtitle, icon: Icon, children, maxWidth
     <div
       className="overlay-enter"
       style={{
-        position: 'fixed', top: 0, right: 0, bottom: 0, left: 220, zIndex: 200,
-        background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(18px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
+        position: 'fixed', inset: 0, zIndex: 200,
+        background: 'rgba(14,14,16,0.6)', backdropFilter: 'blur(20px) saturate(0.8)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        paddingTop: 24, paddingBottom: 24, paddingLeft: 244, paddingRight: 24,
       }}
       onClick={e => e.target === e.currentTarget && onClose()}
     >
