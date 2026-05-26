@@ -37,8 +37,7 @@ function costoUnitario(cantidad, costoTotal, unidad) {
   const qty  = Number(cantidad);
   const cost = Number(costoTotal);
   if (!qty || !cost) return null;
-  const val  = (cost / qty).toLocaleString('es-DO', { maximumFractionDigits: 2 });
-  return `$${val} / ${UNIDAD_ABBR[unidad] || unidad}`;
+  return `$${(cost / qty).toLocaleString('es-DO', { maximumFractionDigits: 2 })} / ${UNIDAD_ABBR[unidad] || unidad}`;
 }
 
 // ── Product autocomplete ──────────────────────────────────────────────────────
@@ -54,7 +53,7 @@ function ProductoCombobox({ value, onTyping, onSelect, onRequestAdd, productos }
   const showAdd    = value.trim().length > 1 && !exactMatch;
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
       <input
         value={value}
         onChange={e => { onTyping(e.target.value); setOpen(true); }}
@@ -80,21 +79,21 @@ function ProductoCombobox({ value, onTyping, onSelect, onRequestAdd, productos }
           {matches.map(p => (
             <button key={p.id} type="button"
               onMouseDown={() => { onSelect(p.nombreCompleto, p); setOpen(false); }}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 13px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left', gap: 8 }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
               onMouseLeave={e => e.currentTarget.style.background = 'none'}>
-              <span style={{ fontSize: 13, color: t.text1 }}>{p.nombreCompleto}</span>
+              <span style={{ fontSize: 13, color: t.text1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nombreCompleto}</span>
               <Badge color={CAT_COLOR[p.categoria] || 'gray'}>{p.categoria}</Badge>
             </button>
           ))}
           {showAdd && (
             <button type="button"
               onMouseDown={() => { onRequestAdd(value); setOpen(false); }}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '9px 13px', background: 'none', border: 'none', borderTop: matches.length > 0 ? `1px solid ${t.border}` : 'none', cursor: 'pointer', fontFamily: 'inherit', color: t.accent, fontSize: 13 }}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: 'none', border: 'none', borderTop: matches.length > 0 ? `1px solid ${t.border}` : 'none', cursor: 'pointer', fontFamily: 'inherit', color: t.accent, fontSize: 13 }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(232,25,75,0.06)'}
               onMouseLeave={e => e.currentTarget.style.background = 'none'}>
-              <Plus size={12} />
-              Agregar <strong>"{value}"</strong> al catálogo
+              <Plus size={12} style={{ flexShrink: 0 }} />
+              <span>Agregar <strong>"{value}"</strong> al catálogo</span>
             </button>
           )}
         </div>
@@ -106,6 +105,8 @@ function ProductoCombobox({ value, onTyping, onSelect, onRequestAdd, productos }
 // ── Compra Form ───────────────────────────────────────────────────────────────
 
 const EMPTY_ITEM = () => ({ producto: '', categoria: CATEGORIAS[0], unidad: 'Unidad', cantidad: '', costoTotal: '', esNuevo: false });
+
+const fieldLabel = { fontSize: 10, fontWeight: 600, color: 'rgba(244,244,245,0.28)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 5 };
 
 function CompraForm({ onClose, productos, onRegistrar, onEditar, orderEdit }) {
   const hoy    = new Date().toISOString().split('T')[0];
@@ -155,74 +156,101 @@ function CompraForm({ onClose, productos, onRegistrar, onEditar, orderEdit }) {
   };
 
   return (
-    <Modal onClose={onClose} title={isEdit ? `Editando ${orderEdit.id}` : 'Nueva Compra'} subtitle={isEdit ? `Orden del ${orderEdit.fecha}` : 'Registra los productos adquiridos'} icon={ShoppingCart} maxWidth={700}>
+    <Modal
+      onClose={onClose}
+      title={isEdit ? `Editando ${orderEdit.id}` : 'Nueva Compra'}
+      subtitle={isEdit ? `Orden del ${orderEdit.fecha}` : 'Registra los productos adquiridos'}
+      icon={ShoppingCart}
+      maxWidth={680}
+    >
       <form onSubmit={handleSubmit}>
 
-        {/* Date */}
-        <div style={{ marginBottom: 20 }}>
-          <Label>Fecha de compra</Label>
-          <Input type="date" value={fecha} onChange={e => setFecha(e.target.value)} style={{ width: 180 }} />
-        </div>
-
-        {/* Column headers */}
-        <div className="compra-headers">
-          {['Categoría', 'Unidad', 'Cant.', 'Costo total', ''].map(h => (
-            <p key={h} style={{ fontSize: 10, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</p>
-          ))}
+        {/* Fecha */}
+        <div style={{ marginBottom: 18 }}>
+          <p style={fieldLabel}>Fecha de compra</p>
+          <input type="date" value={fecha} onChange={e => setFecha(e.target.value)}
+            style={{ height: 34, padding: '0 12px', borderRadius: 8, border: `1px solid ${t.border2}`, background: t.surface2, color: t.text1, fontSize: 13, fontFamily: 'inherit', outline: 'none', width: 170 }} />
         </div>
 
         {/* Items */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 14 }}>
           {items.map((it, i) => (
             <div key={i} style={{
-              background: 'rgba(255,255,255,0.025)', borderRadius: 9,
-              padding: '11px 12px 10px',
-              border: `1px solid ${it.esNuevo ? 'rgba(232,25,75,0.25)' : t.border}`,
-              display: 'flex', flexDirection: 'column', gap: 8,
+              background: it.esNuevo ? 'rgba(232,25,75,0.04)' : 'rgba(255,255,255,0.025)',
+              borderRadius: 10, padding: '12px 14px',
+              border: `1px solid ${it.esNuevo ? 'rgba(232,25,75,0.22)' : t.border}`,
+              display: 'flex', flexDirection: 'column', gap: 10,
             }}>
-              {/* Row 1: product + delete */}
+
+              {/* Fila 1: producto + eliminar */}
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <div style={{ flex: 1 }}>
-                  <ProductoCombobox
-                    value={it.producto}
-                    onTyping={v => updateProducto(i, v, null)}
-                    onSelect={(nombre, p) => updateProducto(i, nombre, p)}
-                    onRequestAdd={nombre => markNuevo(i, nombre)}
-                    productos={prodsSorted}
-                  />
-                  {it.esNuevo && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 5 }}>
-                      <Sparkles size={10} style={{ color: t.accent }} />
-                      <p style={{ fontSize: 10, color: t.accent, opacity: 0.9 }}>Nuevo — se agregará al catálogo al registrar</p>
-                    </div>
-                  )}
-                </div>
+                <p style={{ ...fieldLabel, marginBottom: 0, flexShrink: 0, width: 62 }}>Producto</p>
+                <ProductoCombobox
+                  value={it.producto}
+                  onTyping={v => updateProducto(i, v, null)}
+                  onSelect={(nombre, p) => updateProducto(i, nombre, p)}
+                  onRequestAdd={nombre => markNuevo(i, nombre)}
+                  productos={prodsSorted}
+                />
                 <button type="button" onClick={() => removeItem(i)} disabled={items.length === 1}
-                  style={{ width: 32, height: 34, borderRadius: 8, border: `1px solid ${t.border}`, background: 'transparent', cursor: items.length > 1 ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, opacity: items.length > 1 ? 1 : 0.25, flexShrink: 0, transition: 'all 0.12s' }}
+                  style={{
+                    width: 30, height: 30, borderRadius: 7, border: `1px solid ${t.border}`,
+                    background: 'transparent', cursor: items.length > 1 ? 'pointer' : 'not-allowed',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: t.text3, opacity: items.length > 1 ? 1 : 0.25, flexShrink: 0, transition: 'all 0.12s',
+                  }}
                   onMouseEnter={e => { if (items.length > 1) { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = '#F87171'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; } }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; e.currentTarget.style.borderColor = t.border; }}>
                   <Trash2 size={12} />
                 </button>
               </div>
 
-              {/* Row 2: details */}
-              <div className="compra-row">
-                <Select value={it.categoria} onChange={e => update(i, 'categoria', e.target.value)}>
-                  {CATEGORIAS.map(c => <option key={c}>{c}</option>)}
-                </Select>
-                <Select value={it.unidad} onChange={e => update(i, 'unidad', e.target.value)}>
-                  {UNIDADES.map(u => <option key={u}>{u}</option>)}
-                </Select>
-                <Input type="number" min="0.01" step="any" placeholder="0" value={it.cantidad} onChange={e => update(i, 'cantidad', e.target.value)} style={{ textAlign: 'right' }} />
-                <Input type="number" min="0" placeholder="$0" value={it.costoTotal} onChange={e => update(i, 'costoTotal', e.target.value)} style={{ textAlign: 'right' }} />
-                <div style={{ paddingLeft: 4 }}>
-                  {costoUnitario(it.cantidad, it.costoTotal, it.unidad) && (
-                    <span style={{ fontSize: 11, color: t.text3, fontWeight: 500, background: 'rgba(255,255,255,0.04)', padding: '3px 8px', borderRadius: 6, whiteSpace: 'nowrap' }}>
-                      → {costoUnitario(it.cantidad, it.costoTotal, it.unidad)}
-                    </span>
-                  )}
+              {it.esNuevo && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: -4 }}>
+                  <Sparkles size={10} style={{ color: t.accent, flexShrink: 0 }} />
+                  <p style={{ fontSize: 10, color: t.accent, opacity: 0.85 }}>Nuevo — se agregará al catálogo al registrar</p>
+                </div>
+              )}
+
+              {/* Fila 2: categoria + unidad + cantidad + costo */}
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 72px 105px', gap: 8 }}>
+                <div>
+                  <p style={fieldLabel}>Categoría</p>
+                  <select value={it.categoria} onChange={e => update(i, 'categoria', e.target.value)}
+                    style={{ width: '100%', height: 34, paddingLeft: 10, paddingRight: 26, borderRadius: 8, border: `1px solid ${t.border2}`, background: t.surface2, color: t.text1, fontSize: 12, fontFamily: 'inherit', outline: 'none', cursor: 'pointer' }}>
+                    {CATEGORIAS.map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <p style={fieldLabel}>Unidad</p>
+                  <select value={it.unidad} onChange={e => update(i, 'unidad', e.target.value)}
+                    style={{ width: '100%', height: 34, paddingLeft: 10, paddingRight: 26, borderRadius: 8, border: `1px solid ${t.border2}`, background: t.surface2, color: t.text1, fontSize: 13, fontFamily: 'inherit', outline: 'none', cursor: 'pointer' }}>
+                    {UNIDADES.map(u => <option key={u}>{u}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <p style={fieldLabel}>Cant.</p>
+                  <input type="number" min="0.01" step="any" placeholder="0"
+                    value={it.cantidad} onChange={e => update(i, 'cantidad', e.target.value)}
+                    style={{ width: '100%', height: 34, padding: '0 10px', textAlign: 'right', borderRadius: 8, border: `1px solid ${t.border2}`, background: t.surface2, color: t.text1, fontSize: 13, fontFamily: 'inherit', outline: 'none' }} />
+                </div>
+                <div>
+                  <p style={fieldLabel}>Costo total</p>
+                  <input type="number" min="0" placeholder="$0"
+                    value={it.costoTotal} onChange={e => update(i, 'costoTotal', e.target.value)}
+                    style={{ width: '100%', height: 34, padding: '0 10px', textAlign: 'right', borderRadius: 8, border: `1px solid ${t.border2}`, background: t.surface2, color: t.text1, fontSize: 13, fontFamily: 'inherit', outline: 'none' }} />
                 </div>
               </div>
+
+              {/* Costo unitario */}
+              {costoUnitario(it.cantidad, it.costoTotal, it.unidad) && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ fontSize: 10, color: t.text3 }}>Costo unitario:</span>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: t.text2, background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: 6 }}>
+                    {costoUnitario(it.cantidad, it.costoTotal, it.unidad)}
+                  </span>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -234,8 +262,8 @@ function CompraForm({ onClose, productos, onRegistrar, onEditar, orderEdit }) {
 
         <ModalFooter>
           <div style={{ marginRight: 'auto' }}>
-            <p style={{ fontSize: 10, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Total</p>
-            <p style={{ fontSize: 18, fontWeight: 700, color: t.text1, letterSpacing: '-0.4px' }}>{fmt(subtotal)}</p>
+            <p style={{ ...fieldLabel, marginBottom: 3 }}>Total orden</p>
+            <p style={{ fontSize: 20, fontWeight: 700, color: t.text1, letterSpacing: '-0.5px' }}>{fmt(subtotal)}</p>
           </div>
           <Btn variant="ghost" onClick={onClose}>Cancelar</Btn>
           <Btn type="submit" variant="primary">
@@ -243,16 +271,6 @@ function CompraForm({ onClose, productos, onRegistrar, onEditar, orderEdit }) {
           </Btn>
         </ModalFooter>
       </form>
-
-      <style>{`
-        .compra-headers { display: grid; grid-template-columns: 140px 90px 65px 115px 1fr; gap: 8px; padding-left: 2px; margin-bottom: 6px; }
-        .compra-row { display: grid; grid-template-columns: 140px 90px 65px 115px 1fr; gap: 8px; align-items: center; }
-        @media (max-width: 600px) {
-          .compra-headers { display: none; }
-          .compra-row { grid-template-columns: 1fr 1fr; }
-          .compra-row > *:last-child { grid-column: 1 / -1; }
-        }
-      `}</style>
     </Modal>
   );
 }
@@ -329,8 +347,7 @@ export default function Compras() {
         <input
           style={{ width: '100%', height: 34, borderRadius: 8, paddingLeft: 32, paddingRight: 12, border: `1px solid ${t.border}`, background: t.surface, fontSize: 13, outline: 'none', fontFamily: 'inherit', color: t.text1 }}
           placeholder="Buscar por producto o ID de orden..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
+          value={search} onChange={e => setSearch(e.target.value)}
         />
       </motion.div>
 
@@ -341,14 +358,12 @@ export default function Compras() {
             No se encontraron compras
           </div>
         )}
-
         {groups.map(g => (
           <div key={g.id} style={{
             background: t.surface, borderRadius: 12,
             border: `1px solid ${confirmDel === g.id ? 'rgba(239,68,68,0.35)' : t.border}`,
             overflow: 'hidden', transition: 'border-color 0.15s',
           }}>
-
             {confirmDel === g.id ? (
               <div style={{ padding: '13px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(239,68,68,0.07)', flexWrap: 'wrap', gap: 10 }}>
                 <div>
@@ -365,23 +380,20 @@ export default function Compras() {
                 <button type="button"
                   onClick={() => setExpandedId(expandedId === g.id ? null : g.id)}
                   style={{ display: 'flex', alignItems: 'center', flex: 1, gap: 10, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left', minWidth: 0 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, fontFamily: 'monospace', background: t.accentDim, color: t.accent, padding: '3px 8px', borderRadius: 6, flexShrink: 0 }}>
-                    {g.id}
-                  </span>
+                  <span style={{ fontSize: 11, fontWeight: 700, fontFamily: 'monospace', background: t.accentDim, color: t.accent, padding: '3px 8px', borderRadius: 6, flexShrink: 0 }}>{g.id}</span>
                   <span style={{ fontSize: 12, color: t.text3, flexShrink: 0 }}>{g.fecha}</span>
-                  <span style={{ fontSize: 12, color: t.text3, flexShrink: 0 }}>{g.items.length} ítem{g.items.length !== 1 ? 's' : ''}</span>
+                  <span style={{ fontSize: 12, color: t.text3 }}>{g.items.length} ítem{g.items.length !== 1 ? 's' : ''}</span>
                   <span style={{ fontSize: 14, fontWeight: 600, color: t.text1, marginLeft: 'auto', flexShrink: 0 }}>{fmt(g.total)}</span>
                   <ChevronDown size={13} style={{ color: t.text3, transform: expandedId === g.id ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }} />
                 </button>
-
                 <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                  <button type="button" onClick={() => setEditOrder(g)} title="Editar orden"
+                  <button type="button" onClick={() => setEditOrder(g)}
                     style={{ width: 30, height: 30, borderRadius: 7, border: `1px solid ${t.border}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, transition: 'all 0.12s' }}
                     onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = t.text1; e.currentTarget.style.borderColor = t.border2; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; e.currentTarget.style.borderColor = t.border; }}>
                     <Edit2 size={12} />
                   </button>
-                  <button type="button" onClick={() => setConfirmDel(g.id)} title="Eliminar orden"
+                  <button type="button" onClick={() => setConfirmDel(g.id)}
                     style={{ width: 30, height: 30, borderRadius: 7, border: `1px solid ${t.border}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, transition: 'all 0.12s' }}
                     onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = '#F87171'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; e.currentTarget.style.borderColor = t.border; }}>
