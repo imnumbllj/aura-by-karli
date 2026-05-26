@@ -1,16 +1,17 @@
 import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { useProductos, useInventario } from '../store/useStore';
 import { Plus, Trash2, Gift } from 'lucide-react';
-import { PageHeader, Label, Input, Select, Btn, t } from '../components/UI';
+import { PageHeader, Label, Input, Select, Btn, t, fadeUp, stagger } from '../components/UI';
 
 export default function CreadorRegalos() {
-  const { productos } = useProductos();
+  const { productos }  = useProductos();
   const { inventario } = useInventario();
 
-  const [nombre,      setNombre]      = useState('');
-  const [ganancia,    setGanancia]    = useState(35);
-  const [manoDeObra,  setManoDeObra]  = useState(500);
-  const [items,       setItems]       = useState([{ producto: '', cantidad: 1 }]);
+  const [nombre,     setNombre]     = useState('');
+  const [ganancia,   setGanancia]   = useState(35);
+  const [manoDeObra, setManoDeObra] = useState(500);
+  const [items,      setItems]      = useState([{ producto: '', cantidad: 1 }]);
 
   const addItem    = () => setItems(p => [...p, { producto: '', cantidad: 1 }]);
   const removeItem = (i) => setItems(p => p.filter((_, x) => x !== i));
@@ -34,20 +35,20 @@ export default function CreadorRegalos() {
   const prods = productos.filter(p => p.activo).sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
 
   return (
-    <div style={{ maxWidth: 720 }}>
-      <PageHeader eyebrow="Calculadora de precios" title="Creador de Regalos" />
+    <motion.div variants={stagger} initial="hidden" animate="show" style={{ maxWidth: 720 }}>
+      <motion.div variants={fadeUp}>
+        <PageHeader eyebrow="Calculadora de precios" title="Creador de Regalos" />
+      </motion.div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
         {/* Config */}
-        <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: 20 }}>
-          <p style={{ fontSize: 12, fontWeight: 600, color: t.text2, marginBottom: 16, letterSpacing: '-0.1px' }}>Configuración</p>
-
+        <motion.div variants={fadeUp} style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: 20 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: t.text2, marginBottom: 16 }}>Configuración</p>
           <div style={{ marginBottom: 16 }}>
             <Label>Nombre del regalo</Label>
             <Input value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Aura Pink, Rey de Corazones..." />
           </div>
-
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div>
               <Label>% Ganancia — <span style={{ color: t.accent, fontWeight: 700 }}>{ganancia}%</span></Label>
@@ -64,38 +65,31 @@ export default function CreadorRegalos() {
               <Input type="number" min="0" value={manoDeObra} onChange={e => setManoDeObra(e.target.value)} />
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Products */}
-        <div style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: 20 }}>
+        <motion.div variants={fadeUp} style={{ background: t.surface, borderRadius: 12, border: `1px solid ${t.border}`, padding: 20 }}>
           <p style={{ fontSize: 12, fontWeight: 600, color: t.text2, marginBottom: 16 }}>Productos</p>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 68px 90px 80px 32px', gap: 8, marginBottom: 10 }}>
-            {['Producto', 'Cant.', 'Costo U.', 'Costo T.', ''].map(h => (
-              <p key={h} style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{h}</p>
-            ))}
-          </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {calc.detalle.map((it, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 68px 90px 80px 32px', gap: 8, alignItems: 'center' }}>
-                <Select value={it.producto} onChange={e => update(i, 'producto', e.target.value)}>
+              <div key={i} className="creator-row">
+                <Select value={it.producto} onChange={e => update(i, 'producto', e.target.value)} style={{ flex: 1, minWidth: 0 }}>
                   <option value="">Seleccionar...</option>
                   {prods.map(p => <option key={p.id} value={p.nombreCompleto}>{p.nombreCompleto}</option>)}
                 </Select>
-                <Input type="number" min="1" value={it.cantidad} onChange={e => update(i, 'cantidad', e.target.value)} style={{ textAlign: 'right' }} />
-                <div style={{ height: 34, borderRadius: 8, background: t.surface2, border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, color: t.text3 }}>
+                <Input type="number" min="1" value={it.cantidad} onChange={e => update(i, 'cantidad', e.target.value)} style={{ width: 68, textAlign: 'right', flexShrink: 0 }} />
+                <div style={{ width: 90, height: 34, borderRadius: 8, background: t.surface2, border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, color: t.text3, flexShrink: 0 }}>
                   {it.costoU > 0 ? fmt(it.costoU) : '—'}
                 </div>
-                <div style={{ height: 34, borderRadius: 8, background: t.surface2, border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, fontWeight: 600, color: t.text1 }}>
+                <div style={{ width: 90, height: 34, borderRadius: 8, background: t.surface2, border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 12, fontSize: 13, fontWeight: 600, color: t.text1, flexShrink: 0 }}>
                   {it.costoT > 0 ? fmt(it.costoT) : '—'}
                 </div>
-                <button type="button" onClick={() => removeItem(i)}
-                  style={{ width: 32, height: 32, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, fontFamily: 'inherit' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = '#F87171'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text3; }}>
+                <motion.button type="button" onClick={() => removeItem(i)}
+                  whileHover={{ backgroundColor: 'rgba(239,68,68,0.1)', color: '#F87171' }}
+                  style={{ width: 32, height: 32, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3, flexShrink: 0 }}>
                   <Trash2 size={13} />
-                </button>
+                </motion.button>
               </div>
             ))}
           </div>
@@ -103,10 +97,10 @@ export default function CreadorRegalos() {
           <button onClick={addItem} style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 14, fontSize: 13, fontWeight: 500, color: t.accent, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>
             <Plus size={13} /> Agregar producto
           </button>
-        </div>
+        </motion.div>
 
         {/* Result */}
-        <div style={{ background: '#111114', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: 20 }}>
+        <motion.div variants={fadeUp} style={{ background: '#111114', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', padding: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
             <div style={{ width: 30, height: 30, borderRadius: 8, background: t.accentDim, border: `1px solid ${t.accentMid}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Gift size={14} style={{ color: t.accent }} />
@@ -117,7 +111,7 @@ export default function CreadorRegalos() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 14 }}>
+          <div className="result-grid" style={{ marginBottom: 14 }}>
             {[
               { label: 'Materiales',           value: fmt(calc.materiales) },
               { label: 'Mano de obra',          value: fmt(manoDeObra) },
@@ -133,10 +127,18 @@ export default function CreadorRegalos() {
 
           <div style={{ background: t.accentDim, borderRadius: 10, padding: '18px 20px', textAlign: 'center', border: `1px solid ${t.accentMid}` }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Precio de venta sugerido</p>
-            <p style={{ fontSize: 40, fontWeight: 800, color: t.text1, letterSpacing: '-1.5px', lineHeight: 1 }}>{fmt(calc.precioVenta)}</p>
+            <p style={{ fontSize: 38, fontWeight: 800, color: t.text1, letterSpacing: '-1.5px', lineHeight: 1 }}>{fmt(calc.precioVenta)}</p>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+
+      <style>{`
+        .creator-row { display: flex; gap: 8px; align-items: center; }
+        .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        @media (min-width: 600px) {
+          .result-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+      `}</style>
+    </motion.div>
   );
 }
