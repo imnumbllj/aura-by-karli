@@ -1,3 +1,7 @@
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+} from './ui/dialog';
+
 // ── Design System — Dark Mode ──
 
 const S = {
@@ -199,32 +203,12 @@ export function TRow({ children, style = {} }) {
   );
 }
 
-// ── Modal ──
-export function Modal({ onClose, title, subtitle, icon: Icon, children, maxWidth = 520 }) {
+// ── Modal (Radix Dialog-based — viewport-centered, sidebar-independent) ──
+export function Modal({ open = true, onClose, title, subtitle, icon: Icon, children, maxWidth = 520 }) {
   return (
-    <div
-      className="overlay-enter"
-      style={{
-        position: 'fixed', inset: 0, zIndex: 200,
-        background: 'rgba(14,14,16,0.6)', backdropFilter: 'blur(20px) saturate(0.8)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        paddingTop: 24, paddingBottom: 24, paddingLeft: 244, paddingRight: 24,
-      }}
-      onClick={e => e.target === e.currentTarget && onClose()}
-    >
-      <div
-        className="modal-enter"
-        style={{
-          background: S.surface,
-          borderRadius: 14,
-          border: `1px solid ${S.border2}`,
-          boxShadow: '0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
-          width: '100%', maxWidth,
-          overflow: 'hidden',
-        }}
-      >
-        {/* Header */}
-        <div style={{ padding: '16px 20px', borderBottom: `1px solid ${S.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <Dialog open={open} onOpenChange={v => !v && onClose()}>
+      <DialogContent onClose={onClose} style={{ maxWidth }}>
+        <DialogHeader>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {Icon && (
               <div style={{ width: 32, height: 32, borderRadius: 8, background: S.accentDim, border: `1px solid ${S.accentMid}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -232,20 +216,14 @@ export function Modal({ onClose, title, subtitle, icon: Icon, children, maxWidth
               </div>
             )}
             <div>
-              <p style={{ fontSize: 14, fontWeight: 600, color: S.text1, letterSpacing: '-0.2px' }}>{title}</p>
-              {subtitle && <p style={{ fontSize: 11, color: S.text3, marginTop: 1 }}>{subtitle}</p>}
+              <DialogTitle>{title}</DialogTitle>
+              {subtitle && <DialogDescription>{subtitle}</DialogDescription>}
             </div>
           </div>
-          <button
-            onClick={onClose}
-            style={{ width: 28, height: 28, borderRadius: 7, background: S.surface2, border: `1px solid ${S.border2}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: S.text3, fontSize: 16, transition: 'all 0.12s' }}
-            onMouseEnter={e => e.currentTarget.style.background = S.surface3}
-            onMouseLeave={e => e.currentTarget.style.background = S.surface2}
-          >×</button>
-        </div>
+        </DialogHeader>
         <div style={{ padding: 20 }}>{children}</div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 export function ModalFooter({ children }) {

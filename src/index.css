@@ -1,4 +1,20 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@theme {
+  --color-bg:          #0E0E10;
+  --color-surface:     #18181B;
+  --color-surface2:    #1F1F23;
+  --color-surface3:    #26262C;
+  --color-accent:      #E8194B;
+  --color-text1:       #F4F4F5;
+  --color-text2:       rgba(244,244,245,0.6);
+  --color-text3:       rgba(244,244,245,0.28);
+  --radius-sm:         6px;
+  --radius-md:         8px;
+  --radius-lg:         12px;
+  --radius-xl:         14px;
+}
 
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -84,8 +100,7 @@ input[type=range] { -webkit-appearance: none; appearance: none; height: 4px; bor
 input[type=range]:focus { box-shadow: none; border-color: transparent; }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); cursor: pointer; }
 
-/* ── Responsive sidebar ── */
-@media (max-width: 768px) {
-  .sidebar { display: none !important; }
-  .main-content { padding: 20px 16px !important; }
+/* ── Mobile top bar ── */
+@media (max-width: 1023px) {
+  .mobile-bar { display: flex !important; }
 }

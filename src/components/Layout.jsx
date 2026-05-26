@@ -1,14 +1,15 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { LayoutDashboard, ShoppingCart, Package, Gift, TrendingUp, Settings2, Menu, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const NAV = [
   { to: '/',           label: 'Dashboard',  icon: LayoutDashboard },
   { to: '/compras',    label: 'Compras',    icon: ShoppingCart },
   { to: '/inventario', label: 'Inventario', icon: Package },
-  { to: '/creador',    label: 'Creador',            icon: Gift },
-  { to: '/ventas',     label: 'Ventas',             icon: TrendingUp },
-  { to: '/productos',  label: 'Productos',          icon: Settings2 },
+  { to: '/creador',    label: 'Creador',    icon: Gift },
+  { to: '/ventas',     label: 'Ventas',     icon: TrendingUp },
+  { to: '/productos',  label: 'Productos',  icon: Settings2 },
 ];
 
 export default function Layout({ children }) {
@@ -18,74 +19,67 @@ export default function Layout({ children }) {
   useEffect(() => setMobileOpen(false), [location]);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#0E0E10' }}>
+    <div className="flex min-h-screen bg-[#0E0E10]">
 
-      {/* ── Mobile overlay ── */}
+      {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 99 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[99] lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
 
-      {/* ── Sidebar ── */}
-      <aside
-        className="sidebar"
-        style={{
-          width: 220, flexShrink: 0,
-          background: '#111114',
-          borderRight: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex', flexDirection: 'column',
-          position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100,
-          transition: 'transform 0.22s cubic-bezier(0.16,1,0.3,1)',
-        }}
-      >
+      {/* Sidebar */}
+      <aside className={cn(
+        'fixed top-0 left-0 bottom-0 w-[220px] z-[100]',
+        'bg-[#111114] border-r border-white/[0.06]',
+        'flex flex-col',
+        'transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]',
+        'lg:translate-x-0',
+        mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+      )}>
         {/* Brand */}
-        <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{
-              width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-              background: 'linear-gradient(135deg, #E8194B 0%, #FF6B8A 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 14, fontWeight: 800, color: '#fff', letterSpacing: '-0.5px',
-              boxShadow: '0 2px 8px rgba(232,25,75,0.4)',
-            }}>A</div>
+        <div className="px-4 pt-[18px] pb-[14px] border-b border-white/[0.05]">
+          <div className="flex items-center gap-[10px]">
+            <div className="w-[30px] h-[30px] rounded-lg flex-shrink-0 flex items-center justify-center text-sm font-extrabold text-white tracking-[-0.5px] shadow-[0_2px_8px_rgba(232,25,75,0.4)]"
+              style={{ background: 'linear-gradient(135deg,#E8194B 0%,#FF6B8A 100%)' }}>
+              A
+            </div>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#F4F4F5', letterSpacing: '-0.2px', lineHeight: 1.2 }}>
-                Aura by Karli
-              </p>
-              <p style={{ fontSize: 10, color: 'rgba(244,244,245,0.28)', marginTop: 1, letterSpacing: '0.02em' }}>
-                Gestión interna
-              </p>
+              <p className="text-[13px] font-semibold text-[#F4F4F5] tracking-[-0.2px] leading-[1.2]">Aura by Karli</p>
+              <p className="text-[10px] text-white/[0.28] mt-[1px] tracking-[0.02em]">Gestión interna</p>
             </div>
           </div>
         </div>
 
         {/* Nav */}
-        <nav style={{ flex: 1, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto' }}>
-          <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: 'rgba(244,244,245,0.2)', padding: '6px 8px 8px' }}>
+        <nav className="flex-1 px-2 py-[10px] flex flex-col gap-[1px] overflow-y-auto">
+          <p className="text-[10px] font-semibold tracking-[0.09em] uppercase text-white/20 px-2 pt-[6px] pb-[8px]">
             Módulos
           </p>
           {NAV.map(({ to, label, icon: Icon }) => (
             <NavLink
-              key={to} to={to} end={to === '/'}
-              style={({ isActive }) => ({
-                display: 'flex', alignItems: 'center', gap: 9,
-                padding: '7px 10px', borderRadius: 8,
-                fontSize: 13, fontWeight: isActive ? 500 : 400,
-                color: isActive ? '#F4F4F5' : 'rgba(244,244,245,0.38)',
-                background: isActive ? 'rgba(255,255,255,0.07)' : 'transparent',
-                borderLeft: isActive ? '2px solid #E8194B' : '2px solid transparent',
-                textDecoration: 'none',
-                transition: 'all 0.14s ease',
-                marginBottom: 1,
-              })}
-              onMouseEnter={e => { if (!e.currentTarget.dataset.active) e.currentTarget.style.color = 'rgba(244,244,245,0.7)'; }}
-              onMouseLeave={e => { if (!e.currentTarget.dataset.active) e.currentTarget.style.color = 'rgba(244,244,245,0.38)'; }}
+              key={to}
+              to={to}
+              end={to === '/'}
+              className={({ isActive }) => cn(
+                'flex items-center gap-[9px] px-[10px] py-[7px] rounded-lg',
+                'text-[13px] no-underline transition-all duration-[140ms]',
+                'border-l-2',
+                isActive
+                  ? 'font-medium text-[#F4F4F5] bg-white/[0.07] border-[#E8194B]'
+                  : 'font-normal text-white/[0.38] border-transparent hover:text-white/70 hover:bg-white/[0.03]',
+              )}
             >
               {({ isActive }) => (
                 <>
-                  <Icon size={15} style={{ color: isActive ? '#FB7185' : 'rgba(244,244,245,0.25)', flexShrink: 0, transition: 'color 0.14s' }} />
+                  <Icon
+                    size={15}
+                    className={cn(
+                      'flex-shrink-0 transition-colors duration-[140ms]',
+                      isActive ? 'text-[#FB7185]' : 'text-white/25',
+                    )}
+                  />
                   {label}
                 </>
               )}
@@ -94,35 +88,36 @@ export default function Layout({ children }) {
         </nav>
 
         {/* Footer */}
-        <div style={{ padding: '10px 12px 14px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ADE80', boxShadow: '0 0 6px rgba(74,222,128,0.6)', flexShrink: 0 }} />
-              <p style={{ fontSize: 11, color: 'rgba(244,244,245,0.3)', fontWeight: 500 }}>Local · v0.1</p>
+        <div className="px-3 pb-[14px] pt-[10px] border-t border-white/[0.05]">
+          <div className="px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05]">
+            <div className="flex items-center gap-[6px]">
+              <div className="w-[6px] h-[6px] rounded-full bg-[#4ADE80] flex-shrink-0 shadow-[0_0_6px_rgba(74,222,128,0.6)]" />
+              <p className="text-[11px] text-white/30 font-medium">Local · v0.1</p>
             </div>
           </div>
         </div>
       </aside>
 
-      {/* ── Mobile top bar ── */}
-      <div style={{
-        display: 'none', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 98,
-        background: 'rgba(14,14,16,0.9)', backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
-        padding: '12px 16px', alignItems: 'center', justifyContent: 'space-between',
-      }} className="mobile-bar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 26, height: 26, borderRadius: 7, background: 'linear-gradient(135deg,#E8194B,#FF6B8A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: '#fff' }}>A</div>
-          <span style={{ fontSize: 13, fontWeight: 600, color: '#F4F4F5' }}>Aura by Karli</span>
+      {/* Mobile top bar */}
+      <div className="mobile-bar hidden fixed top-0 left-0 right-0 z-[98] bg-[rgba(14,14,16,0.9)] backdrop-blur-xl border-b border-white/[0.06] px-4 py-3 items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-[26px] h-[26px] rounded-[7px] flex items-center justify-center text-xs font-extrabold text-white"
+            style={{ background: 'linear-gradient(135deg,#E8194B,#FF6B8A)' }}>
+            A
+          </div>
+          <span className="text-[13px] font-semibold text-[#F4F4F5]">Aura by Karli</span>
         </div>
-        <button onClick={() => setMobileOpen(v => !v)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(244,244,245,0.5)', padding: 4 }}>
+        <button
+          onClick={() => setMobileOpen(v => !v)}
+          className="bg-transparent border-none cursor-pointer text-white/50 p-1"
+        >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
-      {/* ── Main ── */}
-      <div style={{ flex: 1, marginLeft: 220, minWidth: 0, display: 'flex', flexDirection: 'column' }} className="main-content">
-        <main style={{ flex: 1, padding: '36px 40px', maxWidth: 1100, width: '100%', margin: '0 auto' }}>
+      {/* Main */}
+      <div className="flex-1 lg:ml-[220px] min-w-0 flex flex-col pt-[52px] lg:pt-0">
+        <main className="flex-1 px-4 py-5 sm:px-6 sm:py-8 lg:px-10 lg:py-9 max-w-[1100px] w-full mx-auto">
           <div className="page-enter" key={location.pathname}>
             {children}
           </div>
