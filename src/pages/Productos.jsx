@@ -3,10 +3,17 @@ import { useProductos } from '../store/useStore';
 import { Plus, Search, ToggleLeft, ToggleRight, Settings2 } from 'lucide-react';
 import { PageHeader, Btn, Modal, ModalFooter, Label, Input, Select, Badge, Table, Th, Td, TRow, t } from '../components/UI';
 
-const CATEGORIAS = ['Producto Principal', 'Complemento', 'Empaque', 'Decoración', 'Servicio'];
-const TIPOS      = ['Directo', 'Indirecto', 'Servicio'];
-const UNIDADES   = ['Unidad', 'Metro', 'CM', 'Pomo', 'Paquete'];
-const CAT_COLOR  = { 'Producto Principal': 'violet', 'Complemento': 'blue', 'Empaque': 'teal', 'Decoración': 'rose', 'Servicio': 'amber' };
+import { CATEGORIAS, UNIDADES } from './Compras';
+
+const TIPOS     = ['Directo', 'Indirecto', 'Servicio'];
+const CAT_COLOR = {
+  'Peluche & Juguete':     'violet',
+  'Bebida & Licor':        'amber',
+  'Cosmético & Fragancia': 'rose',
+  'Comestible':            'teal',
+  'Decoración':            'blue',
+  'Empaque':               'gray',
+};
 
 function NuevoProductoForm({ onClose, agregar, productos }) {
   const nextId = `P${String(Math.max(0, ...productos.map(p => parseInt(p.id.slice(1)) || 0)) + 1).padStart(3, '0')}`;

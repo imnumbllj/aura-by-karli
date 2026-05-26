@@ -5,10 +5,10 @@ import ventasIniciales from '../data/ventas.json';
 import inventarioInicial from '../data/inventario.json';
 
 const KEYS = {
-  productos: 'abk_productos',
-  compras: 'abk_compras',
-  ventas: 'abk_ventas',
-  inventario: 'abk_inventario',
+  productos:    'abk_productos',
+  compras:      'abk_compras',
+  ventas:       'abk_ventas',
+  inventario:   'abk_inventario',
   lastCompraId: 'abk_lastCompraId',
 };
 
@@ -25,11 +25,10 @@ function save(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-// Seed localStorage on first load
 function seedIfEmpty() {
   if (!localStorage.getItem(KEYS.productos)) save(KEYS.productos, productosIniciales);
-  if (!localStorage.getItem(KEYS.compras)) save(KEYS.compras, comprasIniciales);
-  if (!localStorage.getItem(KEYS.ventas)) save(KEYS.ventas, ventasIniciales);
+  if (!localStorage.getItem(KEYS.compras))   save(KEYS.compras,   comprasIniciales);
+  if (!localStorage.getItem(KEYS.ventas))    save(KEYS.ventas,    ventasIniciales);
   if (!localStorage.getItem(KEYS.lastCompraId)) save(KEYS.lastCompraId, 12);
   if (!localStorage.getItem(KEYS.inventario)) {
     const inv = {};
@@ -37,7 +36,7 @@ function seedIfEmpty() {
       inv[row['Producto']] = {
         totalComprado: row['Total Comprado'] ?? 0,
         costoPromedio: row['Costo Promedio'] ?? 0,
-        stockActual: row['Stock Actual'] ?? 0,
+        stockActual:   row['Stock Actual']   ?? 0,
       };
     });
     save(KEYS.inventario, inv);
@@ -46,6 +45,44 @@ function seedIfEmpty() {
 
 seedIfEmpty();
 
+// ── Inventory helpers (module-level so both registrar and editar can use them) ──
+
+function actualizarInventarioDesdeCompras(nuevasCompras) {
+  const inv = load(KEYS.inventario, {});
+  nuevasCompras.forEach(c => {
+    const key = c.Producto;
+    if (!inv[key]) inv[key] = { totalComprado: 0, costoPromedio: 0, stockActual: 0 };
+    const prev = inv[key];
+    const totalCosto    = prev.totalComprado * prev.costoPromedio + c['Costo T'];
+    const totalUnidades = prev.totalComprado + c.Cantidad;
+    inv[key] = {
+      totalComprado: totalUnidades,
+      costoPromedio: totalUnidades > 0 ? totalCosto / totalUnidades : 0,
+      stockActual:   prev.stockActual + c.Cantidad,
+    };
+  });
+  save(KEYS.inventario, inv);
+}
+
+function revertirInventario(items) {
+  const inv = load(KEYS.inventario, {});
+  items.forEach(c => {
+    const key = c.Producto;
+    if (!inv[key]) return;
+    const prev            = inv[key];
+    const cantRevertida   = Math.max(0, prev.totalComprado - (c.Cantidad || 0));
+    const costoRevertido  = prev.totalComprado * prev.costoPromedio - (c['Costo T'] || 0);
+    inv[key] = {
+      totalComprado: cantRevertida,
+      costoPromedio: cantRevertida > 0 ? costoRevertido / cantRevertida : 0,
+      stockActual:   Math.max(0, prev.stockActual - (c.Cantidad || 0)),
+    };
+  });
+  save(KEYS.inventario, inv);
+}
+
+// ── Hooks ──
+
 export function useProductos() {
   const [productos, setProductos] = useState(() => load(KEYS.productos, productosIniciales));
 
@@ -53,6 +90,12 @@ export function useProductos() {
     const nuevo = [...productos, p];
     setProductos(nuevo);
     save(KEYS.productos, nuevo);
+  };
+
+  const agregarBatch = (nuevos) => {
+    const actualizado = [...productos, ...nuevos];
+    setProductos(actualizado);
+    save(KEYS.productos, actualizado);
   };
 
   const actualizar = (id, datos) => {
@@ -65,25 +108,24 @@ export function useProductos() {
     actualizar(id, { activo: !productos.find(p => p.id === id)?.activo });
   };
 
-  return { productos, agregar, actualizar, toggleActivo };
+  return { productos, agregar, agregarBatch, actualizar, toggleActivo };
 }
 
 export function useCompras() {
   const [compras, setCompras] = useState(() => load(KEYS.compras, comprasIniciales));
-  const [lastId, setLastId] = useState(() => load(KEYS.lastCompraId, 12));
+  const [lastId,  setLastId]  = useState(() => load(KEYS.lastCompraId, 12));
 
   const registrar = (items, fecha) => {
     const nuevoId = lastId + 1;
-    const idStr = `C-${String(nuevoId).padStart(4, '0')}`;
+    const idStr   = `C-${String(nuevoId).padStart(4, '0')}`;
     const nuevasCompras = items.map((item, i) => ({
-      id: Date.now() + i,
-      Fecha: fecha,
-      ID: idStr,
+      id:        Date.now() + i,
+      Fecha:     fecha,
+      ID:        idStr,
       Categoria: item.categoria,
-      Producto: item.producto,
-      Tipo: item.tipo,
-      Unidad: item.unidad,
-      Cantidad: item.cantidad,
+      Producto:  item.producto,
+      Unidad:    item.unidad,
+      Cantidad:  item.cantidad,
       'Costo T': item.costoTotal,
       'Costo U': item.cantidad > 0 ? item.costoTotal / item.cantidad : 0,
     }));
@@ -96,27 +138,36 @@ export function useCompras() {
     return idStr;
   };
 
-  return { compras, registrar };
-}
+  const eliminar = (orderId) => {
+    const orderItems = compras.filter(c => c.ID === orderId);
+    revertirInventario(orderItems);
+    const nuevo = compras.filter(c => c.ID !== orderId);
+    setCompras(nuevo);
+    save(KEYS.compras, nuevo);
+  };
 
-function actualizarInventarioDesdeCompras(nuevasCompras) {
-  const inv = load(KEYS.inventario, {});
-  nuevasCompras.forEach(c => {
-    const key = c.Producto;
-    if (!inv[key]) {
-      inv[key] = { totalComprado: 0, costoPromedio: 0, stockActual: 0 };
-    }
-    const prev = inv[key];
-    const totalAnterior = prev.totalComprado * prev.costoPromedio;
-    const totalNuevo = totalAnterior + c['Costo T'];
-    const totalUnidades = prev.totalComprado + c.Cantidad;
-    inv[key] = {
-      totalComprado: totalUnidades,
-      costoPromedio: totalUnidades > 0 ? totalNuevo / totalUnidades : 0,
-      stockActual: prev.stockActual + c.Cantidad,
-    };
-  });
-  save(KEYS.inventario, inv);
+  const editar = (orderId, newItems, fecha) => {
+    const oldItems = compras.filter(c => c.ID === orderId);
+    revertirInventario(oldItems);
+    const nuevasCompras = newItems.map((item, i) => ({
+      id:        Date.now() + i,
+      Fecha:     fecha,
+      ID:        orderId,
+      Categoria: item.categoria,
+      Producto:  item.producto,
+      Unidad:    item.unidad,
+      Cantidad:  item.cantidad,
+      'Costo T': item.costoTotal,
+      'Costo U': item.cantidad > 0 ? item.costoTotal / item.cantidad : 0,
+    }));
+    const sinOld = compras.filter(c => c.ID !== orderId);
+    const nuevo  = [...nuevasCompras, ...sinOld];
+    setCompras(nuevo);
+    save(KEYS.compras, nuevo);
+    actualizarInventarioDesdeCompras(nuevasCompras);
+  };
+
+  return { compras, registrar, eliminar, editar };
 }
 
 export function useInventario() {
