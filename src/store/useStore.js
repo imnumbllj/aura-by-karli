@@ -25,7 +25,14 @@ function save(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
+const DATA_VERSION = '2';
+
 function seedIfEmpty() {
+  // Re-seed products when data version bumps (categories/units changed)
+  if (localStorage.getItem('abk_version') !== DATA_VERSION) {
+    save(KEYS.productos, productosIniciales);
+    localStorage.setItem('abk_version', DATA_VERSION);
+  }
   if (!localStorage.getItem(KEYS.productos)) save(KEYS.productos, productosIniciales);
   if (!localStorage.getItem(KEYS.compras))   save(KEYS.compras,   comprasIniciales);
   if (!localStorage.getItem(KEYS.ventas))    save(KEYS.ventas,    ventasIniciales);

@@ -12,6 +12,7 @@ export const CATEGORIAS = [
   'Comestible',
   'Decoración',
   'Empaque',
+  'Otros',
 ];
 
 export const UNIDADES = ['Unidad', 'Metro', 'Paquete', 'Rollo'];
@@ -25,6 +26,7 @@ const CAT_COLOR = {
   'Comestible':            'teal',
   'Decoración':            'blue',
   'Empaque':               'gray',
+  'Otros':                 'gray',
   // legacy fallbacks
   'Producto Principal': 'violet',
   'Complemento':        'blue',
