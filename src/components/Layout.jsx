@@ -27,7 +27,8 @@ export default function Layout({ children }) {
         }
         .abk-topbar { display: none; }
         .abk-content { margin-left: 220px; }
-        .abk-main { padding: 36px 40px; max-width: 1120px; width: 100%; }
+        .abk-main { padding: 36px 40px; max-width: 1120px; width: 100%; margin: 0 auto; }
+        .page-enter > * { margin-left: auto; margin-right: auto; }
 
         @media (max-width: 1023px) {
           .abk-sidebar { transform: translateX(-220px); }

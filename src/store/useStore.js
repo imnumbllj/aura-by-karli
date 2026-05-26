@@ -25,7 +25,7 @@ function save(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-const DATA_VERSION = '2';
+const DATA_VERSION = '3';
 
 function seedIfEmpty() {
   // Re-seed products when data version bumps (categories/units changed)
