@@ -5,10 +5,10 @@ import { LayoutDashboard, ShoppingCart, Package, Gift, TrendingUp, Settings2, Me
 const NAV = [
   { to: '/',           label: 'Dashboard',  icon: LayoutDashboard },
   { to: '/compras',    label: 'Compras',    icon: ShoppingCart },
-  { to: '/inventario', label: 'Inventario', icon: Package },
-  { to: '/creador',    label: 'Creador',    icon: Gift },
   { to: '/ventas',     label: 'Ventas',     icon: TrendingUp },
+  { to: '/creador',    label: 'Creador',    icon: Gift },
   { to: '/productos',  label: 'Productos',  icon: Settings2 },
+  { to: '/inventario', label: 'Inventario', icon: Package },
 ];
 
 export default function Layout({ children }) {

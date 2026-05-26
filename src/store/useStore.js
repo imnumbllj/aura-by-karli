@@ -191,7 +191,23 @@ export function useInventario() {
     }
   };
 
-  return { inventario, refrescar, descontarStock };
+  const editarItem = (nombre, datos) => {
+    const inv = load(KEYS.inventario, {});
+    if (inv[nombre]) {
+      inv[nombre] = { ...inv[nombre], ...datos };
+      save(KEYS.inventario, inv);
+      setInventario({ ...inv });
+    }
+  };
+
+  const eliminarItem = (nombre) => {
+    const inv = load(KEYS.inventario, {});
+    delete inv[nombre];
+    save(KEYS.inventario, inv);
+    setInventario({ ...inv });
+  };
+
+  return { inventario, refrescar, descontarStock, editarItem, eliminarItem };
 }
 
 export function useVentas() {

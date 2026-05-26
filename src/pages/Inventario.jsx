@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInventario } from '../store/useStore';
-import { Search } from 'lucide-react';
-import { PageHeader, Badge, Table, Th, Td, TRow, t, fadeUp, stagger } from '../components/UI';
+import { Search, Pencil, Trash2, Package } from 'lucide-react';
+import { PageHeader, Badge, Table, Th, Td, TRow, Btn, Modal, ModalFooter, Label, Input, t, fadeUp, stagger } from '../components/UI';
 
 function stockBadge(n) {
   if (n === 0) return <Badge color="red">Sin stock</Badge>;
@@ -16,10 +16,53 @@ const FILTROS = [
   { v: 'sinstock', l: 'Sin stock' },
 ];
 
+function EditarModal({ nombre, data, onClose, onGuardar }) {
+  const [stock,  setStock]  = useState(String(data.stockActual));
+  const [costo,  setCosto]  = useState(String(Math.round(data.costoPromedio)));
+  const [total,  setTotal]  = useState(String(data.totalComprado));
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onGuardar(nombre, {
+      stockActual:   Number(stock)  || 0,
+      costoPromedio: Number(costo)  || 0,
+      totalComprado: Number(total)  || 0,
+    });
+    onClose();
+  };
+
+  return (
+    <Modal onClose={onClose} title="Editar registro" subtitle={nombre} icon={Package}>
+      <form onSubmit={handleSubmit}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 4 }}>
+          <div>
+            <Label>Stock actual</Label>
+            <Input type="number" min="0" step="any" value={stock} onChange={e => setStock(e.target.value)} />
+          </div>
+          <div>
+            <Label>Costo promedio ($)</Label>
+            <Input type="number" min="0" step="any" value={costo} onChange={e => setCosto(e.target.value)} />
+          </div>
+          <div>
+            <Label>Total comprado</Label>
+            <Input type="number" min="0" step="any" value={total} onChange={e => setTotal(e.target.value)} />
+          </div>
+        </div>
+        <ModalFooter>
+          <Btn variant="ghost" onClick={onClose}>Cancelar</Btn>
+          <Btn type="submit" variant="primary">Guardar</Btn>
+        </ModalFooter>
+      </form>
+    </Modal>
+  );
+}
+
 export default function Inventario() {
-  const { inventario } = useInventario();
-  const [search, setSearch] = useState('');
-  const [filtro, setFiltro] = useState('todos');
+  const { inventario, editarItem, eliminarItem } = useInventario();
+  const [search,     setSearch]     = useState('');
+  const [filtro,     setFiltro]     = useState('todos');
+  const [editando,   setEditando]   = useState(null);
+  const [confirmDel, setConfirmDel] = useState(null);
 
   const all = Object.entries(inventario);
   const items = all
@@ -41,7 +84,7 @@ export default function Inventario() {
         <PageHeader eyebrow="Control de stock" title="Inventario" />
       </motion.div>
 
-      {/* Summary pills */}
+      {/* Pills */}
       <motion.div variants={fadeUp} style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
         {[
           { label: `${all.length} productos`, bg: t.surface, border: t.border, text: t.text2 },
@@ -88,11 +131,12 @@ export default function Inventario() {
               <Th align="right">Total comprado</Th>
               <Th align="right">Costo prom.</Th>
               <Th align="center">Estado</Th>
+              <Th align="center"></Th>
             </tr>
           </thead>
           <tbody>
             {items.length === 0 && (
-              <tr><td colSpan={5} style={{ textAlign: 'center', padding: '48px 0', color: t.text3, fontSize: 13 }}>
+              <tr><td colSpan={6} style={{ textAlign: 'center', padding: '48px 0', color: t.text3, fontSize: 13 }}>
                 No se encontraron productos
               </td></tr>
             )}
@@ -103,6 +147,31 @@ export default function Inventario() {
                 <Td align="right" style={{ color: t.text3 }}>{data.totalComprado}</Td>
                 <Td align="right" style={{ color: t.text2 }}>{fmt(data.costoPromedio)}</Td>
                 <Td align="center">{stockBadge(data.stockActual)}</Td>
+                <Td align="center">
+                  {confirmDel === nombre ? (
+                    <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                      <Btn size="sm" variant="danger" onClick={() => { eliminarItem(nombre); setConfirmDel(null); }}>Sí</Btn>
+                      <Btn size="sm" variant="ghost"  onClick={() => setConfirmDel(null)}>No</Btn>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                      <motion.button
+                        whileHover={{ backgroundColor: 'rgba(255,255,255,0.06)', color: t.text1 }}
+                        onClick={() => setEditando(nombre)}
+                        style={{ width: 28, height: 28, borderRadius: 7, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3 }}
+                      >
+                        <Pencil size={12} />
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ backgroundColor: 'rgba(239,68,68,0.1)', color: '#F87171' }}
+                        onClick={() => setConfirmDel(nombre)}
+                        style={{ width: 28, height: 28, borderRadius: 7, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: t.text3 }}
+                      >
+                        <Trash2 size={12} />
+                      </motion.button>
+                    </div>
+                  )}
+                </Td>
               </TRow>
             ))}
           </tbody>
@@ -111,6 +180,15 @@ export default function Inventario() {
           {items.length} de {all.length} productos
         </p>
       </motion.div>
+
+      {editando && (
+        <EditarModal
+          nombre={editando}
+          data={inventario[editando]}
+          onClose={() => setEditando(null)}
+          onGuardar={editarItem}
+        />
+      )}
     </motion.div>
   );
 }
